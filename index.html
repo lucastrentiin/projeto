@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dose Dupla — Protótipo (E3)</title>
+<style>
+:root{
+  --verde:#0f766e; --verde2:#115e59; --verde-claro:#ccfbf1;
+  --tinta:#111827; --cinza:#4b5563; --linha:#d1d5db; --fundo:#f3f4f6;
+  --leve:#a16207; --leve-bg:#fef9c3; --mod:#c2410c; --mod-bg:#ffedd5; --grave:#b91c1c; --grave-bg:#fee2e2;
+  --ok:#15803d; --ok-bg:#dcfce7;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--tinta);background:var(--fundo)}
+header{background:#fff;border-bottom:1px solid var(--linha);padding:12px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+header h1{font-size:18px;margin:0}
+header .meta{font-size:12px;color:var(--cinza)}
+nav.tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+nav.tabs button{border:1px solid var(--linha);background:#fff;padding:8px 14px;border-radius:8px;font-size:14px;cursor:pointer}
+nav.tabs button.on{background:var(--verde);color:#fff;border-color:var(--verde)}
+main{max-width:1200px;margin:0 auto;padding:20px}
+.secao{display:none}.secao.on{display:block}
+
+/* ---------- protótipo ---------- */
+.proto{display:grid;grid-template-columns:400px 1fr;gap:24px;align-items:start}
+@media(max-width:860px){.proto{grid-template-columns:1fr}}
+.phone{width:390px;max-width:100%;height:780px;margin:0 auto;background:#000;border-radius:44px;padding:12px;box-shadow:0 20px 40px rgba(0,0,0,.25)}
+.screen{position:relative;height:100%;background:#fff;border-radius:34px;overflow:hidden;display:flex;flex-direction:column;font-size:calc(16px * var(--esc,1))}
+.status{height:34px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font-size:13px;font-weight:600;background:#fff}
+.app-top{background:var(--verde);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;min-height:56px}
+.app-top h2{margin:0;font-size:1.15em;flex:1}
+.app-top button{background:transparent;border:0;color:#fff;font-size:1.4em;cursor:pointer;padding:0 6px}
+.corpo{flex:1;overflow-y:auto;padding:16px}
+.tabbar{display:flex;border-top:1px solid var(--linha);background:#fff}
+.tabbar button{flex:1;border:0;background:#fff;padding:8px 2px 12px;font-size:.72em;color:var(--cinza);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabbar button .ic{font-size:1.5em}
+.tabbar button.on{color:var(--verde);font-weight:700}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:1em;font-weight:700;cursor:pointer;margin:8px 0;background:var(--verde);color:#fff}
+.btn.sec{background:#fff;color:var(--verde);border:2px solid var(--verde)}
+.btn.perigo{background:var(--grave)}
+.btn.peq{display:inline-block;width:auto;padding:8px 12px;font-size:.85em;margin:0}
+.link{background:none;border:0;color:var(--verde);font-weight:600;font-size:.95em;cursor:pointer;padding:6px 0;text-decoration:underline}
+label{display:block;font-weight:600;margin:12px 0 4px;font-size:.95em}
+input,select{width:100%;padding:12px;font-size:1em;border:2px solid var(--linha);border-radius:10px}
+input:focus,select:focus{outline:3px solid var(--verde-claro);border-color:var(--verde)}
+.erro{color:var(--grave);font-size:.85em;margin-top:4px;font-weight:600}
+.card{border:1px solid var(--linha);border-radius:14px;padding:14px;margin:10px 0;background:#fff}
+.card h3{margin:0 0 4px;font-size:1.05em}
+.sub{color:var(--cinza);font-size:.88em}
+.linha{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.tag{display:inline-block;font-size:.75em;font-weight:700;border-radius:999px;padding:3px 10px}
+.t-ok{background:var(--ok-bg);color:var(--ok)} .t-pend{background:#e5e7eb;color:#374151}
+.t-atr{background:var(--grave-bg);color:var(--grave)} .t-leve{background:var(--leve-bg);color:var(--leve)}
+.t-moderada{background:var(--mod-bg);color:var(--mod)} .t-grave{background:var(--grave-bg);color:var(--grave)}
+.aviso{border-radius:12px;padding:12px;font-size:.9em;margin:10px 0}
+.aviso.info{background:#e0f2fe;color:#075985}
+.aviso.ok{background:var(--ok-bg);color:var(--ok)}
+.aviso.alerta{background:var(--grave-bg);color:var(--grave)}
+.hora{font-size:1.6em;font-weight:800}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{background:var(--verde-claro);color:var(--verde2);border-radius:999px;padding:4px 10px;font-size:.85em;font-weight:600}
+.chip button{border:0;background:none;color:inherit;cursor:pointer;font-weight:800}
+.logo{text-align:center;margin:24px 0 8px}
+.logo .pill{font-size:52px}
+.logo h1{margin:4px 0;color:var(--verde);font-size:1.8em}
+.demo{border:1px dashed var(--linha);border-radius:12px;padding:10px;margin-top:16px;font-size:.85em}
+.demo button{margin:4px 4px 0 0}
+.overlay{position:absolute;inset:0;background:rgba(17,24,39,.55);display:flex;align-items:flex-start;justify-content:center;padding-top:60px;z-index:5}
+.notif{background:#fff;border-radius:18px;width:92%;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.notif .app{font-size:.8em;color:var(--cinza);font-weight:700;display:flex;justify-content:space-between}
+.sev{border-left:6px solid;padding:12px;border-radius:10px;margin:10px 0}
+.sev.leve{border-color:var(--leve);background:var(--leve-bg)} .sev.moderada{border-color:var(--mod);background:var(--mod-bg)} .sev.grave{border-color:var(--grave);background:var(--grave-bg)}
+.toast{position:absolute;left:12px;right:12px;bottom:80px;background:#111827;color:#fff;padding:12px 14px;border-radius:12px;font-size:.9em;z-index:6}
+.seg{display:flex;border:2px solid var(--verde);border-radius:10px;overflow:hidden;margin:8px 0}
+.seg button{flex:1;border:0;padding:10px;background:#fff;color:var(--verde);font-weight:700;cursor:pointer;font-size:.9em}
+.seg button.on{background:var(--verde);color:#fff}
+
+/* painel lateral */
+.painel{background:#fff;border:1px solid var(--linha);border-radius:14px;padding:18px}
+.painel h2{margin:0 0 4px;font-size:20px}
+.painel .id{font-size:13px;color:var(--cinza);font-weight:700;letter-spacing:.04em}
+.painel .bloco{margin-top:14px}
+.painel .bloco b{display:block;font-size:13px;color:var(--cinza);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.rq{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:6px;padding:3px 8px;margin:0 4px 4px 0;font-size:13px;font-weight:600;cursor:help}
+.hs{display:inline-block;background:#fdf2f8;color:#9d174d;border-radius:6px;padding:3px 8px;margin:0 4px 4px 0;font-size:13px;font-weight:600;cursor:help}
+.lista-telas{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;margin-top:8px}
+.lista-telas button{text-align:left;border:1px solid var(--linha);background:#fff;border-radius:8px;padding:7px 9px;font-size:13px;cursor:pointer}
+.lista-telas button.on{border-color:var(--verde);background:var(--verde-claro);font-weight:700}
+.nota{font-size:12px;color:var(--cinza);margin-top:14px}
+
+/* documentos */
+.doc{background:#fff;border:1px solid var(--linha);border-radius:14px;padding:24px}
+.doc h2{margin-top:0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--linha);padding:8px;text-align:left;vertical-align:top}
+th{background:#f9fafb}
+td[contenteditable]{background:#fffbeb;min-width:120px}
+td[contenteditable]:empty::before{content:"(preencher)";color:#9ca3af}
+.flow svg{max-width:100%;height:auto}
+.imprimir{float:right}
+@media print{header,nav,.imprimir,.naoimp{display:none!important}.secao{display:block!important}#sec-proto{display:none!important}body{background:#fff}.doc{border:0;page-break-after:always}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>💊 Dose Dupla — Protótipo navegável (E3)</h1>
+    <div class="meta">Engenharia de Software · Unochapecó · Equipe: Camila Siviero, Leonardo Ribas, Eduarda Cristine Vargas, Gabriel Mezzomo Oliboni, Lucas Trentin Avila e Wellinton Davi da Costa · Versão 1.0 · 03/11/2026</div>
+  </div>
+  <nav class="tabs">
+    <button data-sec="proto" class="on">Protótipo</button>
+    <button data-sec="fluxo">Fluxo de navegação</button>
+    <button data-sec="rast">Telas × Histórias × Requisitos</button>
+    <button data-sec="valid">Roteiro e registro de validação</button>
+  </nav>
+</header>
+
+<main>
+<!-- ================= PROTÓTIPO ================= -->
+<section class="secao on" id="sec-proto">
+  <div class="proto">
+    <div class="phone"><div class="screen" id="tela"></div></div>
+    <div class="painel">
+      <div class="id" id="p-id">T01</div>
+      <h2 id="p-nome">Entrar</h2>
+      <div id="p-desc" class="sub"></div>
+      <div class="bloco"><b>Passos da história atendidos</b><div id="p-h"></div></div>
+      <div class="bloco"><b>Requisitos atendidos</b><div id="p-r"></div></div>
+      <div class="bloco"><b>Ir direto para uma tela</b><div class="lista-telas" id="p-lista"></div></div>
+      <div class="nota">Protótipo de média fidelidade, sem servidor nem banco de dados: os dados resetam ao recarregar. Os medicamentos e interações são <b>fictícios, apenas para demonstração</b>, e não servem como referência clínica. Horário simulado: 08:30.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FLUXO ================= -->
+<section class="secao" id="sec-fluxo">
+  <div class="doc">
+    <h2>Fluxo de navegação entre as telas principais</h2>
+    <p class="sub">Linhas contínuas: navegação feita pelo usuário. Linhas tracejadas: eventos do sistema (pedido de vínculo chegando ao paciente; aviso à cuidadora após 60 minutos sem confirmação).</p>
+    <div class="flow"><pre class="mermaid">flowchart LR
+  T01["T01 Entrar"] --> T02["T02 Criar conta"]
+  T01 --> T03["T03 Recuperar senha"]
+  T02 --> T04["T04 Consentimento LGPD"]
+  T01 -->|paciente| T05["T05 Hoje"]
+  T04 --> T05
+  T05 --> T06["T06 Novo medicamento"]
+  T06 -->|há interação| T07["T07 Alerta de interação"]
+  T06 -->|sem interação| T08["T08 Meus medicamentos"]
+  T07 --> T08
+  T08 --> T09["T09 Editar medicamento"]
+  T09 -->|verifica de novo| T07
+  T05 --> T10["T10 Lembrete"]
+  T10 -->|Tomei| T05
+  T05 --> T11["T11 Vínculos"]
+  T11 --> T12["T12 Convidar pessoa"]
+  T05 --> T13["T13 Histórico"]
+  T05 --> T14["T14 Acessibilidade"]
+  T01 -->|médica / cuidadora| T15["T15 Meus pacientes"]
+  T15 --> T16["T16 Buscar paciente"]
+  T16 -.->|pedido| T11
+  T15 --> T17["T17 Ficha do paciente"]
+  T10 -.->|60 min sem confirmar| T18["T18 Dose não confirmada"]
+  T15 --> T18
+  T18 --> T17
+</pre></div>
+    <h3>Fluxos centrais cobertos</h3>
+    <table>
+      <tr><th>Fluxo</th><th>Caminho de telas</th><th>Passos da história</th></tr>
+      <tr><td>F1 · Criar conta e entrar</td><td>T01 → T02 → T04 → T05 (alternativo: T01 → T03)</td><td>1, 2</td></tr>
+      <tr><td>F2 · Cadastrar medicamento com verificação de interação</td><td>T05 → T06 → T07 (se houver interação) → T08</td><td>3, 4, 5</td></tr>
+      <tr><td>F3 · Vincular médica e cuidadora</td><td>T15 → T16 (pedido) → T11 (paciente aceita/recusa); ou T11 → T12 (paciente convida)</td><td>6, 7, 8, 9</td></tr>
+      <tr><td>F4 · Consultar medicamentos do paciente</td><td>T15 → T17</td><td>10</td></tr>
+      <tr><td>F5 · Lembrete e confirmação da dose</td><td>T10 → T05</td><td>11, 12</td></tr>
+      <tr><td>F6 · Dose não confirmada</td><td>T10 (60 min sem resposta) → T18 → T17</td><td>13</td></tr>
+      <tr><td>F7 · Alterar dose e verificar de novo</td><td>T08 → T09 → T07 → T08</td><td>14</td></tr>
+      <tr><td>F8 · Histórico de doses</td><td>T13 (paciente) e T17 (médica/cuidadora)</td><td>15</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= RASTREABILIDADE ================= -->
+<section class="secao" id="sec-rast">
+  <div class="doc">
+    <h2>Relação entre telas, passos da história e requisitos</h2>
+    <p class="sub">Os números de "História" são os passos da história de uso do Seu João (seção E2). Os requisitos seguem a numeração RF/RNF da E2.</p>
+    <div id="tab-rast"></div>
+    <h3>Cobertura dos requisitos funcionais</h3>
+    <div id="tab-cob"></div>
+  </div>
+</section>
+
+<!-- ================= VALIDAÇÃO ================= -->
+<section class="secao" id="sec-valid">
+  <div class="doc">
+    <button class="btn peq imprimir" onclick="window.print()">Imprimir / salvar PDF</button>
+    <h2>Roteiro de validação</h2>
+    <p><b>Objetivo:</b> verificar se uma pessoa do público-alvo consegue, sem ajuda, realizar os fluxos centrais do Dose Dupla e entender os alertas.</p>
+    <p><b>Participante:</b> pelo menos 1 pessoa representativa. De preferência alguém que toma medicamentos de uso contínuo (idoso, como o Seu João) ou que cuida de alguém que toma (como a Ana).</p>
+    <p><b>Como conduzir (15 a 20 min):</b> abrir o link do protótipo no celular ou computador; ler cada tarefa sem explicar onde clicar; observar e anotar onde a pessoa hesita, erra ou pergunta; marcar o tempo da tarefa 2 (RNF10: até 3 minutos).</p>
+    <table>
+      <tr><th>#</th><th>Tarefa pedida ao participante</th><th>Considerado sucesso quando</th><th>Telas / requisitos</th></tr>
+      <tr><td>1</td><td>"Crie uma conta para você."</td><td>Chega na tela Hoje, corrigindo sozinho o aviso de senha fraca, se aparecer.</td><td>T01, T02, T04 · RF11, RNF06</td></tr>
+      <tr><td>2</td><td>"Cadastre o Ibuprofeno 400 mg, às 12:00."</td><td>Salva em até 3 minutos e entende o alerta de interação.</td><td>T06, T07 · RF01, RF13, RF14, RNF10</td></tr>
+      <tr><td>3</td><td>"Chegou a hora do remédio. Confirme que você tomou."</td><td>Usa "Simular lembrete" e toca em "Tomei".</td><td>T10, T05 · RF05, RF12</td></tr>
+      <tr><td>4</td><td>"A Dra. Helena pediu para te acompanhar. Aceite."</td><td>Encontra o pedido em Vínculos e aceita.</td><td>T11 · RF07</td></tr>
+      <tr><td>5</td><td>"A médica mudou a dose da Losartana para 100 mg. Atualize."</td><td>Edita e salva; o app verifica as interações de novo.</td><td>T08, T09 · RF09, RF13</td></tr>
+      <tr><td>6</td><td>"Entre como a cuidadora Ana e veja quais doses o Seu João não tomou."</td><td>Abre o aviso ou a ficha e encontra o histórico.</td><td>T15, T17, T18 · RF10, RF15, RF16</td></tr>
+      <tr><td>7</td><td>"Aumente o tamanho das letras."</td><td>Acha a opção em Ajustes e a letra aumenta.</td><td>T14 · RNF11</td></tr>
+    </table>
+    <p><b>Perguntas ao final:</b> (a) O que foi mais difícil? (b) Algum texto ou botão ficou confuso? (c) O alerta de interação deixou claro o que fazer? (d) Você usaria o app no dia a dia? Por quê?</p>
+
+    <h2>Registro da validação</h2>
+    <p class="sub naoimp">Os campos amarelos são editáveis: preencha durante ou depois do teste e use "Imprimir / salvar PDF" para guardar a evidência. O rascunho fica salvo só neste navegador.</p>
+    <table>
+      <tr><th style="width:30%">Data</th><td contenteditable data-k="data"></td></tr>
+      <tr><th>Participante (perfil, idade aproximada, sem nome completo)</th><td contenteditable data-k="part"></td></tr>
+      <tr><th>Dispositivo usado</th><td contenteditable data-k="disp"></td></tr>
+      <tr><th>Condução / observadores da equipe</th><td contenteditable data-k="cond"></td></tr>
+    </table>
+    <br>
+    <table>
+      <tr><th>#</th><th>Concluiu? (sim / com ajuda / não)</th><th>Tempo</th><th>Observação / fala do participante</th></tr>
+      <tr><td>1</td><td contenteditable data-k="r1a"></td><td contenteditable data-k="r1b"></td><td contenteditable data-k="r1c"></td></tr>
+      <tr><td>2</td><td contenteditable data-k="r2a"></td><td contenteditable data-k="r2b"></td><td contenteditable data-k="r2c"></td></tr>
+      <tr><td>3</td><td contenteditable data-k="r3a"></td><td contenteditable data-k="r3b"></td><td contenteditable data-k="r3c"></td></tr>
+      <tr><td>4</td><td contenteditable data-k="r4a"></td><td contenteditable data-k="r4b"></td><td contenteditable data-k="r4c"></td></tr>
+      <tr><td>5</td><td contenteditable data-k="r5a"></td><td contenteditable data-k="r5b"></td><td contenteditable data-k="r5c"></td></tr>
+      <tr><td>6</td><td contenteditable data-k="r6a"></td><td contenteditable data-k="r6b"></td><td contenteditable data-k="r6c"></td></tr>
+      <tr><td>7</td><td contenteditable data-k="r7a"></td><td contenteditable data-k="r7b"></td><td contenteditable data-k="r7c"></td></tr>
+    </table>
+    <h3>Retornos obtidos e decisões de ajuste</h3>
+    <table>
+      <tr><th>ID</th><th>Retorno recebido</th><th>Tela / requisito afetado</th><th>Decisão da equipe</th><th>Situação</th></tr>
+      <tr><td>A1</td><td contenteditable data-k="a1a"></td><td contenteditable data-k="a1b"></td><td contenteditable data-k="a1c"></td><td contenteditable data-k="a1d"></td></tr>
+      <tr><td>A2</td><td contenteditable data-k="a2a"></td><td contenteditable data-k="a2b"></td><td contenteditable data-k="a2c"></td><td contenteditable data-k="a2d"></td></tr>
+      <tr><td>A3</td><td contenteditable data-k="a3a"></td><td contenteditable data-k="a3b"></td><td contenteditable data-k="a3c"></td><td contenteditable data-k="a3d"></td></tr>
+    </table>
+  </div>
+</section>
+</main>
+
+<script>
+/* ---------------- dados ---------------- */
+const TELAS = {
+  T01:{n:"Entrar",d:"Login com e-mail e senha. Contas de demonstração para alternar entre paciente, médica e cuidadora.",h:[1],r:["RF11","RNF01","RNF04"]},
+  T02:{n:"Criar conta",d:"Cadastro com validação de e-mail já existente e de senha fraca.",h:[1,2],r:["RF02","RF11","RNF01"]},
+  T03:{n:"Recuperar senha",d:"Envio de link de redefinição por e-mail.",h:[2],r:["RF17"]},
+  T04:{n:"Consentimento LGPD",d:"Pede permissão para usar os dados de saúde antes do primeiro uso.",h:[1],r:["RNF06"]},
+  T05:{n:"Hoje",d:"Tela inicial do paciente: doses do dia e confirmação de dose tomada.",h:[11,12],r:["RF05","RF12"]},
+  T06:{n:"Novo medicamento",d:"Cadastro de nome, dose e horários. Ao salvar, verifica interações com os medicamentos já cadastrados.",h:[3,4],r:["RF01","RF13","RNF10"]},
+  T07:{n:"Alerta de interação",d:"Mostra cada interação encontrada classificada como leve, moderada ou grave.",h:[5,14],r:["RF06","RF13","RF14","RNF03"]},
+  T08:{n:"Meus medicamentos",d:"Lista dos medicamentos cadastrados com acesso à edição.",h:[3,14],r:["RF01","RF09"]},
+  T09:{n:"Editar medicamento",d:"Alteração de dose e horários; ao salvar, as interações são verificadas de novo.",h:[14],r:["RF09","RF13"]},
+  T10:{n:"Lembrete (notificação)",d:"Notificação no horário cadastrado, funcionando mesmo sem internet.",h:[11,12,13],r:["RF05","RF12","RNF02","RNF08"]},
+  T11:{n:"Vínculos",d:"Pedidos recebidos (aceitar/recusar), médico responsável e cuidadores vinculados.",h:[7,8,9],r:["RF03","RF04","RF07","RF08"]},
+  T12:{n:"Convidar pessoa",d:"O paciente inicia o vínculo; a pessoa convidada precisa aceitar.",h:[9],r:["RF07","RF08"]},
+  T13:{n:"Histórico de doses",d:"Doses tomadas e não tomadas dos últimos dias.",h:[15],r:["RF15"]},
+  T14:{n:"Ajustes e acessibilidade",d:"Tamanho da letra e alto contraste.",h:[],r:["RNF11","RNF12"]},
+  T15:{n:"Meus pacientes",d:"Tela inicial da médica e da cuidadora: pacientes vinculados e avisos.",h:[10,13],r:["RF10","RF16"]},
+  T16:{n:"Buscar paciente",d:"Médica ou cuidadora procura o paciente pelo e-mail e envia pedido de vínculo.",h:[6,8],r:["RF07","RF08"]},
+  T17:{n:"Ficha do paciente",d:"Medicamentos e histórico de doses do paciente. Cada acesso é registrado em log.",h:[10,15],r:["RF10","RF15","RNF07"]},
+  T18:{n:"Dose não confirmada",d:"Aviso para a cuidadora quando a dose não é confirmada em até 60 minutos.",h:[13],r:["RF16"]},
+};
+const HIST = {1:"Cria conta com e-mail e senha",2:"Erros de cadastro e recuperação de senha",3:"Cadastra medicamento (nome, dose, horários)",4:"App verifica interação com os já cadastrados",5:"Classifica leve/moderada/grave e alerta",6:"Médica procura o paciente e envia pedido",7:"Paciente aceita ou recusa o pedido",8:"Cuidadora envia pedido e paciente aceita",9:"Paciente convida e a outra pessoa aceita",10:"Médica e cuidadora consultam os medicamentos",11:"Notificação no horário, mesmo sem internet",12:"Paciente confirma que tomou",13:"Sem confirmação em 60 min, avisa a cuidadora",14:"Médica muda a dose e app verifica de novo",15:"Histórico de doses tomadas e não tomadas"};
+const REQ = {RF01:"Manter o registro de cada medicamento",RF02:"Manter usuário",RF03:"Manter o médico responsável",RF04:"Manter o cuidador",RF05:"Notificações nos horários cadastrados",RF06:"Informar possíveis interferências entre medicamentos",RF07:"Vincular médico responsável",RF08:"Vincular cuidador",RF09:"Atualizar informações dos medicamentos",RF10:"Médico e cuidador autorizados consultam os medicamentos",RF11:"Criar conta e acessar com e-mail e senha",RF12:"Registrar que tomou a dose",RF13:"Verificar interações ao cadastrar ou atualizar",RF14:"Classificar interação como leve, moderada ou grave",RF15:"Histórico de doses tomadas e não tomadas",RF16:"Notificar o cuidador após 60 min sem confirmação",RF17:"Recuperar a senha por e-mail",RNF01:"Senhas somente com hash",RNF02:"Lembretes funcionando sem internet",RNF03:"Base de interações confiável",RNF04:"Dados enviados via HTTPS",RNF06:"Permissão antes de usar dados de saúde (LGPD)",RNF07:"Log a cada consulta do médico/cuidador",RNF08:"Notificação com no máximo 1 min de atraso",RNF10:"Cadastrar medicamento em até 3 min sem ajuda",RNF11:"Aumentar o tamanho das letras",RNF12:"Contraste suficiente em textos e botões"};
+
+/* base fictícia de interações (somente demonstração) */
+const INTER = [
+  {a:"losartana",b:"ibuprofeno",g:"moderada",t:"O ibuprofeno pode diminuir o efeito da losartana sobre a pressão e sobrecarregar os rins."},
+  {a:"varfarina",b:"ibuprofeno",g:"grave",t:"Aumenta muito o risco de sangramento."},
+  {a:"varfarina",b:"aas",g:"grave",t:"Aumenta muito o risco de sangramento."},
+  {a:"metformina",b:"prednisona",g:"moderada",t:"A prednisona pode aumentar a glicose e reduzir o efeito da metformina."},
+  {a:"metformina",b:"omeprazol",g:"leve",t:"Pequena alteração na absorção; normalmente não exige mudança."},
+  {a:"clopidogrel",b:"omeprazol",g:"moderada",t:"O omeprazol pode reduzir o efeito do clopidogrel."},
+];
+const SUGEST = ["Ibuprofeno","Varfarina","AAS","Prednisona","Omeprazol","Clopidogrel","Paracetamol","Sinvastatina"];
+
+let S; function reset(){ S = {
+  tela:"T01", pilha:[], perfil:null, esc:1, contraste:false,
+  meds:[{id:1,nome:"Losartana",dose:"50 mg",hor:["08:00","20:00"]},{id:2,nome:"Metformina",dose:"850 mg",hor:["07:00","19:00"]}],
+  tomadas:{"2-07:00":true}, // id-hora
+  vinc:{medico:null,cuid:[],pedidos:[{id:"p1",nome:"Dra. Helena Souza",papel:"médica",email:"helena@clinica.com"},{id:"p2",nome:"Ana Pereira",papel:"cuidadora",email:"ana@email.com"}],convites:[]},
+  rascunho:null, editId:null, interacoes:[], aposSalvar:"T08", overlay:null, toast:null, erros:{}, pac:null
+};}
+reset();
+const HIST_DOSES = [
+  {dia:"02/11",itens:[["Metformina","07:00",true],["Losartana","08:00",true],["Metformina","19:00",true],["Losartana","20:00",false]]},
+  {dia:"01/11",itens:[["Metformina","07:00",true],["Losartana","08:00",true],["Metformina","19:00",false],["Losartana","20:00",true]]},
+  {dia:"31/10",itens:[["Metformina","07:00",true],["Losartana","08:00",true],["Metformina","19:00",true],["Losartana","20:00",true]]},
+];
+const AGORA="08:30";
+
+/* ---------------- navegação ---------------- */
+function ir(t,semPilha){ if(!semPilha && S.tela!==t) S.pilha.push(S.tela); S.tela=t; S.overlay=null; S.erros={}; render(); }
+function voltar(){ S.tela=S.pilha.pop()||(S.perfil==="paciente"?"T05":S.perfil?"T15":"T01"); S.overlay=null; render(); }
+function toast(m){ S.toast=m; render(); setTimeout(()=>{S.toast=null;render();},2600); }
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z]/g,"");}
+
+function topo(titulo,back=true,extra=""){return `<div class="app-top">${back?'<button aria-label="Voltar" onclick="voltar()">‹</button>':''}<h2>${titulo}</h2>${extra}</div>`;}
+function tabsPac(on){const b=[["T05","🏠","Hoje"],["T08","💊","Remédios"],["T13","📅","Histórico"],["T11","👥","Vínculos"],["T14","⚙️","Ajustes"]];
+  return `<div class="tabbar">${b.map(x=>`<button class="${x[0]===on?'on':''}" onclick="S.pilha=[];ir('${x[0]}',true)"><span class="ic">${x[1]}</span>${x[2]}</button>`).join("")}</div>`;}
+function tabsProf(on){const b=[["T15","🏠","Pacientes"],["T16","🔍","Buscar"],["T14","⚙️","Ajustes"]];
+  return `<div class="tabbar">${b.map(x=>`<button class="${x[0]===on?'on':''}" onclick="S.pilha=[];ir('${x[0]}',true)"><span class="ic">${x[1]}</span>${x[2]}</button>`).join("")}</div>`;}
+const status=`<div class="status"><span>${AGORA}</span><span>📶 🔋</span></div>`;
+
+function dosesHoje(){const l=[];S.meds.forEach(m=>m.hor.forEach(h=>l.push({m,h,k:m.id+"-"+h})));return l.sort((a,b)=>a.h.localeCompare(b.h));}
+function estadoDose(d){ if(S.tomadas[d.k]) return ["Tomada","t-ok"]; if(d.h<=AGORA) return ["Atrasada","t-atr"]; return ["Pendente","t-pend"]; }
+function verifica(nome,ignorarId){const n=norm(nome);const r=[];S.meds.filter(m=>m.id!==ignorarId).forEach(m=>{const o=norm(m.nome);INTER.forEach(i=>{if((i.a===n&&i.b===o)||(i.b===n&&i.a===o))r.push({com:m.nome,...i});});});const ord={grave:0,moderada:1,leve:2};return r.sort((x,y)=>ord[x.g]-ord[y.g]);}
+
+/* ---------------- telas ---------------- */
+const V = {
+T01(){return `${status}<div class="corpo">
+  <div class="logo"><div class="pill">💊</div><h1>Dose Dupla</h1><div class="sub">Seus remédios na hora certa, com quem cuida de você.</div></div>
+  <label for="e">E-mail</label><input id="e" type="email" placeholder="seu@email.com" value="joao@email.com">
+  <label for="s">Senha</label><input id="s" type="password" value="••••••••">
+  <button class="btn" onclick="entrar('paciente')">Entrar</button>
+  <button class="link" onclick="ir('T03')">Esqueci minha senha</button><br>
+  <button class="btn sec" onclick="ir('T02')">Criar conta</button>
+  <div class="demo"><b>Demonstração:</b> entrar como<br>
+   <button class="btn peq" onclick="entrar('paciente')">👴 Seu João (paciente)</button>
+   <button class="btn peq" onclick="entrar('medica')">🩺 Dra. Helena (médica)</button>
+   <button class="btn peq" onclick="entrar('cuidadora')">🤝 Ana (cuidadora)</button></div>
+  <div class="sub" style="margin-top:10px">🔒 Conexão segura (HTTPS). A senha é guardada só como hash.</div>
+</div>`;},
+T02(){const e=S.erros;return `${status}${topo("Criar conta")}<div class="corpo">
+  <label>Eu sou</label><div class="seg" id="tipo"><button class="on" onclick="seg(this)">Paciente</button><button onclick="seg(this)">Médico(a)</button><button onclick="seg(this)">Cuidador(a)</button></div>
+  <label for="cn">Nome</label><input id="cn" value="${esc(e._n||"João da Silva")}">
+  <label for="ce">E-mail</label><input id="ce" type="email" value="${esc(e._e||"joao@email.com")}">${e.email?`<div class="erro">${e.email}</div>`:""}
+  <label for="cs">Senha</label><input id="cs" type="password" value="${esc(e._s||"123")}">
+  <div class="sub">Mínimo de 8 caracteres, com letras e números.</div>${e.senha?`<div class="erro">${e.senha}</div>`:""}
+  <button class="btn" onclick="criarConta()">Criar conta</button>
+  <div class="aviso info">Dica para a demonstração: "joao@email.com" já existe. Teste com outro e-mail e uma senha como "remedio2026".</div>
+</div>`;},
+T03(){return `${status}${topo("Recuperar senha")}<div class="corpo">
+  <p>Digite o e-mail da sua conta. Vamos enviar um link para você criar uma nova senha.</p>
+  <label for="re">E-mail</label><input id="re" type="email" value="joao@email.com">
+  <button class="btn" onclick="S.overlay='rec';render()">Enviar link</button>
+  ${S.overlay==='rec'?`<div class="aviso ok">✔ Enviamos um link para o seu e-mail. Ele vale por 30 minutos.</div><button class="btn sec" onclick="ir('T01')">Voltar para o login</button>`:""}
+</div>`;},
+T04(){return `${status}${topo("Seus dados de saúde",false)}<div class="corpo">
+  <p style="font-size:1.05em">Para funcionar, o Dose Dupla precisa guardar <b>seus medicamentos, horários e doses tomadas</b>.</p>
+  <div class="card"><b>✔ Usamos para:</b> lembrar seus horários, avisar sobre interações e mostrar ao médico e cuidador que <b>você autorizar</b>.</div>
+  <div class="card"><b>✖ Não usamos para:</b> propaganda ou venda de dados.</div>
+  <div class="sub">Você pode remover uma autorização ou apagar seus dados a qualquer momento em Ajustes (LGPD).</div>
+  <button class="btn" onclick="S.pilha=[];ir('T05',true)">Concordo e quero continuar</button>
+  <button class="btn sec" onclick="ir('T01',true)">Agora não</button>
+</div>`;},
+T05(){const ds=dosesHoje();const prox=ds.find(d=>!S.tomadas[d.k]);return `${status}${topo("Olá, Seu João",false,'<span title="Funciona sem internet">📴✓</span>')}<div class="corpo">
+  <div class="sub">Terça, 03 de novembro</div>
+  ${prox?`<div class="card" style="border:2px solid var(--verde)"><div class="sub">Próxima dose</div><div class="linha"><div><div class="hora">${prox.h}</div><b>${esc(prox.m.nome)} ${esc(prox.m.dose)}</b></div><button class="btn peq" onclick="tomar('${prox.k}')">Tomei ✔</button></div></div>`:`<div class="aviso ok">✔ Todas as doses de hoje foram tomadas.</div>`}
+  <h3 style="margin:16px 0 4px">Doses de hoje</h3>
+  ${ds.map(d=>{const [t,c]=estadoDose(d);return `<div class="card linha"><div><b>${d.h}</b> · ${esc(d.m.nome)} ${esc(d.m.dose)}</div>${S.tomadas[d.k]?`<span class="tag ${c}">${t}</span>`:`<button class="btn peq ${c==='t-atr'?'perigo':''}" onclick="tomar('${d.k}')">${c==='t-atr'?'Atrasada · Tomei':'Tomei'}</button>`}</div>`}).join("")}
+  <button class="btn" onclick="novoMed()">＋ Adicionar medicamento</button>
+  <div class="demo"><b>Simulação:</b><br>
+   <button class="btn peq sec" onclick="S.overlay='notif';render()">🔔 Simular lembrete das 08:00</button>
+   <button class="btn peq sec" onclick="sem60()">⏱ Simular 60 min sem confirmar</button></div>
+  ${S.overlay==='notif'?notif():""}
+</div>${tabsPac("T05")}`;},
+T06(){const r=S.rascunho;return `${status}${topo(S.editId?"Editar medicamento":"Novo medicamento")}<div class="corpo">
+  <label for="mn">Nome do medicamento</label><input id="mn" list="sug" value="${esc(r.nome)}" oninput="S.rascunho.nome=this.value" placeholder="Ex.: Ibuprofeno">
+  <datalist id="sug">${SUGEST.map(s=>`<option value="${s}">`).join("")}</datalist>
+  ${S.erros.nome?`<div class="erro">${S.erros.nome}</div>`:""}
+  <label for="md">Dose</label><input id="md" value="${esc(r.dose)}" oninput="S.rascunho.dose=this.value" placeholder="Ex.: 400 mg">
+  <label>Horários</label>
+  <div class="chips">${r.hor.map((h,i)=>`<span class="chip">${h} <button aria-label="remover" onclick="S.rascunho.hor.splice(${i},1);render()">×</button></span>`).join("")||'<span class="sub">Nenhum horário ainda</span>'}</div>
+  <div class="linha" style="margin-top:8px"><input id="mh" type="time" value="12:00" style="flex:1"><button class="btn peq sec" onclick="addHora()">Adicionar</button></div>
+  ${S.erros.hor?`<div class="erro">${S.erros.hor}</div>`:""}
+  <button class="btn" onclick="salvarMed()">Salvar</button>
+  <div class="sub">Ao salvar, verificamos se este remédio interage com os que você já usa.</div>
+  <div class="aviso info">Para a demonstração, experimente <b>Ibuprofeno</b> (moderada com Losartana), <b>Prednisona</b> (moderada) ou <b>Omeprazol</b> (leve). Paracetamol não gera alerta.</div>
+</div>`;},
+T07(){const pior=S.interacoes[0].g;return `${status}${topo("Atenção: possível interação")}<div class="corpo">
+  <p>Encontramos <b>${S.interacoes.length} possível(is) interação(ões)</b> com <b>${esc(S.rascunho.nome)}</b>:</p>
+  ${S.interacoes.map(i=>`<div class="sev ${i.g}"><span class="tag t-${i.g}">${i.g.toUpperCase()}</span><h3 style="margin:6px 0">${esc(S.rascunho.nome)} + ${esc(i.com)}</h3><div>${i.t}</div></div>`).join("")}
+  <div class="aviso info">${pior==='grave'?'<b>Não comece a usar sem falar com seu médico.</b> ':''}Fale com seu médico ou farmacêutico antes de mudar qualquer remédio. ${S.vinc.medico?'A Dra. Helena também verá este alerta.':''}</div>
+  <div class="sub">Fonte: base de interações (dados fictícios no protótipo · RNF03).</div>
+  <button class="btn" onclick="confirmarMed()">Entendi, salvar mesmo assim</button>
+  <button class="btn sec" onclick="voltar()">Voltar e revisar</button>
+</div>`;},
+T08(){return `${status}${topo("Meus medicamentos",false)}<div class="corpo">
+  ${S.meds.map(m=>`<div class="card"><div class="linha"><div><h3>${esc(m.nome)}</h3><div class="sub">${esc(m.dose)} · ${m.hor.join(", ")}</div></div><button class="btn peq sec" onclick="editar(${m.id})">Editar</button></div></div>`).join("")}
+  <button class="btn" onclick="novoMed()">＋ Adicionar medicamento</button>
+</div>${tabsPac("T08")}`;},
+T09(){return V.T06();},
+T10(){return `${status}<div class="corpo" style="background:linear-gradient(#134e4a,#0f766e);color:#fff;text-align:center">
+  <div style="font-size:4em;font-weight:200;margin-top:30px">08:00</div><div>Terça, 03 de novembro</div>
+  ${notif(true)}
+</div>`;},
+T11(){const v=S.vinc;return `${status}${topo("Vínculos",false)}<div class="corpo">
+  ${v.pedidos.length?`<h3>Pedidos recebidos</h3>`+v.pedidos.map(p=>`<div class="card"><b>${esc(p.nome)}</b> quer te acompanhar como <b>${p.papel}</b>.<div class="sub">Vai poder ver seus medicamentos e o histórico de doses.</div><div class="linha" style="margin-top:8px"><button class="btn peq" onclick="aceitar('${p.id}')">Aceitar</button><button class="btn peq sec" onclick="recusar('${p.id}')">Recusar</button></div></div>`).join(""):""}
+  <h3>Médico responsável</h3>
+  ${v.medico?`<div class="card linha"><div>🩺 <b>${esc(v.medico)}</b></div><button class="link" onclick="S.vinc.medico=null;toast('Vínculo removido')">Remover</button></div>`:`<div class="sub">Nenhum médico vinculado.</div>`}
+  <h3>Cuidadores</h3>
+  ${v.cuid.length?v.cuid.map((c,i)=>`<div class="card linha"><div>🤝 <b>${esc(c)}</b></div><button class="link" onclick="S.vinc.cuid.splice(${i},1);toast('Vínculo removido')">Remover</button></div>`).join(""):`<div class="sub">Nenhum cuidador vinculado.</div>`}
+  ${v.convites.length?`<h3>Convites enviados</h3>`+v.convites.map(c=>`<div class="card linha"><div>${esc(c.email)}<div class="sub">${c.papel}</div></div><span class="tag t-pend">Aguardando aceite</span></div>`).join(""):""}
+  <button class="btn" onclick="ir('T12')">＋ Convidar médico ou cuidador</button>
+</div>${tabsPac("T11")}`;},
+T12(){return `${status}${topo("Convidar pessoa")}<div class="corpo">
+  <label>Essa pessoa é</label><div class="seg"><button class="on" onclick="seg(this)">Cuidador(a)</button><button onclick="seg(this)">Médico(a)</button></div>
+  <label for="ie">E-mail da pessoa</label><input id="ie" type="email" value="carlos.filho@email.com">
+  <div class="sub">A pessoa recebe o convite e só passa a ver seus dados depois de aceitar.</div>
+  <button class="btn" onclick="convidar()">Enviar convite</button>
+</div>`;},
+T13(){return `${status}${topo(S.perfil==="paciente"?"Histórico de doses":"Histórico",S.perfil!=="paciente")}<div class="corpo">${histHTML()}</div>${S.perfil==="paciente"?tabsPac("T13"):""}`;},
+T14(){return `${status}${topo("Ajustes",false)}<div class="corpo">
+  <h3>Tamanho da letra</h3>
+  <div class="seg">${[[1,"Normal"],[1.15,"Grande"],[1.3,"Muito grande"]].map(x=>`<button class="${S.esc===x[0]?'on':''}" onclick="S.esc=${x[0]};render()">${x[1]}</button>`).join("")}</div>
+  <p style="font-size:1em">Exemplo: <b>Losartana 50 mg às 08:00</b></p>
+  <h3>Alto contraste</h3>
+  <div class="seg"><button class="${!S.contraste?'on':''}" onclick="S.contraste=false;render()">Desligado</button><button class="${S.contraste?'on':''}" onclick="S.contraste=true;render()">Ligado</button></div>
+  <h3>Privacidade (LGPD)</h3>
+  <div class="card"><button class="link" onclick="toast('Protótipo: abriria a lista de autorizações')">Ver quem tem acesso aos meus dados</button><br><button class="link" onclick="toast('Protótipo: pediria confirmação para apagar')">Apagar minha conta e meus dados</button></div>
+  <button class="btn sec" onclick="sair()">Sair</button>
+</div>${S.perfil==="paciente"?tabsPac("T14"):tabsProf("T14")}`;},
+T15(){const med=S.perfil==="medica";const vinc=med?!!S.vinc.medico:S.vinc.cuid.length>0;const nome=med?"Dra. Helena":"Ana";
+  const pend=S.vinc.pedidos.some(p=>p.papel===(med?"médica":"cuidadora"));
+  return `${status}${topo("Olá, "+nome,false)}<div class="corpo">
+  ${!med&&S.alerta60&&vinc?`<div class="card" style="border:2px solid var(--grave);cursor:pointer" onclick="ir('T18')"><span class="tag t-atr">AVISO</span><h3 style="margin-top:6px">Seu João não confirmou a dose das 08:00</h3><div class="sub">Losartana 50 mg · há 60 minutos</div></div>`:""}
+  <h3>Meus pacientes</h3>
+  ${vinc?`<div class="card linha" style="cursor:pointer" onclick="abrirPac()"><div>👴 <b>João da Silva</b><div class="sub">${S.meds.length} medicamentos · ${med?"você é a médica responsável":"você é cuidadora"}</div></div><span>›</span></div>`
+   :pend?`<div class="card"><b>João da Silva</b><div class="sub">Pedido enviado. Aguardando o paciente aceitar.</div><span class="tag t-pend">Aguardando aceite</span></div>
+     <div class="aviso info">Na demonstração: entre como Seu João, vá em Vínculos e aceite o pedido.</div>`
+   :`<div class="sub">Nenhum paciente vinculado.</div>`}
+  <button class="btn" onclick="ir('T16')">🔍 Buscar paciente</button>
+</div>${tabsProf("T15")}`;},
+T16(){return `${status}${topo("Buscar paciente",false)}<div class="corpo">
+  <label for="be">E-mail do paciente</label><input id="be" type="email" value="joao@email.com">
+  <button class="btn sec" onclick="S.overlay='achou';render()">Buscar</button>
+  ${S.overlay==='achou'?`<div class="card"><b>João da Silva</b><div class="sub">joao@email.com</div>
+    <p class="sub">Você só verá os dados depois que ele aceitar o pedido.</p>
+    <button class="btn" onclick="pedir()">Enviar pedido para acompanhar</button></div>`:""}
+</div>${tabsProf("T16")}`;},
+T17(){return `${status}${topo("João da Silva")}<div class="corpo">
+  <div class="aviso info">🔒 Este acesso foi registrado em ${AGORA} de 03/11 (log de consulta).</div>
+  <h3>Medicamentos em uso</h3>
+  ${S.meds.map(m=>`<div class="card"><h3>${esc(m.nome)}</h3><div class="sub">${esc(m.dose)} · ${m.hor.join(", ")}</div></div>`).join("")}
+  <h3>Doses de hoje</h3>
+  ${dosesHoje().map(d=>{const [t,c]=estadoDose(d);return `<div class="card linha"><div><b>${d.h}</b> · ${esc(d.m.nome)}</div><span class="tag ${c}">${t}</span></div>`}).join("")}
+  <button class="btn sec" onclick="ir('T13')">Ver histórico completo</button>
+</div>`;},
+T18(){return `${status}${topo("Dose não confirmada")}<div class="corpo">
+  <div class="sev grave"><h3 style="margin:0 0 6px">Seu João ainda não confirmou</h3><div><b>Losartana 50 mg</b> · horário 08:00</div><div class="sub">Sem confirmação há 60 minutos.</div></div>
+  <button class="btn" onclick="toast('Protótipo: abriria a ligação para o Seu João')">📞 Ligar para o Seu João</button>
+  <button class="btn sec" onclick="abrirPac()">Ver ficha do paciente</button>
+</div>`;},
+};
+
+function notif(tela){return `<div class="${tela?'':'overlay'}"><div class="notif" style="${tela?'margin:40px auto;color:var(--tinta);text-align:left':''}">
+  <div class="app"><span>💊 DOSE DUPLA</span><span>agora</span></div>
+  <h3 style="margin:8px 0 2px">Hora do seu remédio</h3><div><b>Losartana 50 mg</b> · 08:00</div>
+  <div class="sub" style="margin-top:4px">📴 Lembrete agendado no aparelho: funciona sem internet.</div>
+  <div class="linha" style="margin-top:10px"><button class="btn peq" onclick="tomar('1-08:00');S.pilha=[];ir('T05',true)">Tomei ✔</button><button class="btn peq sec" onclick="toast('Lembrete adiado por 10 minutos');S.overlay=null">Adiar 10 min</button></div>
+</div></div>`;}
+function histHTML(){return `<div class="linha" style="margin-bottom:8px"><span class="tag t-ok">Tomada</span><span class="tag t-atr">Não tomada</span><span class="sub">Últimos dias</span></div>`+
+  `<div class="card"><b>Hoje, 03/11</b>${dosesHoje().filter(d=>d.h<=AGORA).map(d=>{const [t,c]=estadoDose(d);return `<div class="linha" style="margin-top:6px"><span>${d.h} · ${esc(d.m.nome)}</span><span class="tag ${c==='t-atr'?'t-atr':c}">${c==='t-atr'?'Não tomada':t}</span></div>`}).join("")}</div>`+
+  HIST_DOSES.map(d=>`<div class="card"><b>${d.dia}</b>${d.itens.map(i=>`<div class="linha" style="margin-top:6px"><span>${i[1]} · ${i[0]}</span><span class="tag ${i[2]?'t-ok':'t-atr'}">${i[2]?'Tomada':'Não tomada'}</span></div>`).join("")}</div>`).join("")+
+  `<div class="sub">Adesão nos últimos 3 dias: 10 de 12 doses (83%).</div>`;}
+
+/* ---------------- ações ---------------- */
+function entrar(p){S.perfil=p;S.pilha=[];ir(p==="paciente"?"T05":"T15",true);}
+function sair(){const k=S;reset();S.meds=k.meds;S.tomadas=k.tomadas;S.vinc=k.vinc;S.alerta60=k.alerta60;S.esc=k.esc;S.contraste=k.contraste;render();}
+function seg(b){[...b.parentNode.children].forEach(x=>x.classList.remove("on"));b.classList.add("on");}
+function criarConta(){const n=val("cn"),e=val("ce").trim().toLowerCase(),s=val("cs");const er={_n:n,_e:e,_s:s};
+  if(e==="joao@email.com"||e==="ana@email.com"||e==="helena@clinica.com") er.email="Este e-mail já tem conta. Entre ou recupere a senha.";
+  else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) er.email="Digite um e-mail válido.";
+  if(s.length<8||!/[a-z]/i.test(s)||!/\d/.test(s)) er.senha="Senha fraca: use 8 caracteres ou mais, com letras e números.";
+  if(er.email||er.senha){S.erros=er;render();return;}
+  S.perfil="paciente";ir("T04");}
+function val(id){const e=document.getElementById(id);return e?e.value:"";}
+function novoMed(){S.editId=null;S.rascunho={nome:"",dose:"",hor:[]};ir("T06");}
+function editar(id){const m=S.meds.find(x=>x.id===id);S.editId=id;S.rascunho={nome:m.nome,dose:m.dose,hor:[...m.hor]};ir("T09");}
+function addHora(){const h=val("mh");if(h&&!S.rascunho.hor.includes(h)){S.rascunho.hor.push(h);S.rascunho.hor.sort();}render();}
+function salvarMed(){const r=S.rascunho;r.nome=val("mn").trim();r.dose=val("md").trim();const er={};
+  if(!r.nome) er.nome="Informe o nome do medicamento."; if(!r.hor.length) er.hor="Adicione pelo menos um horário.";
+  if(er.nome||er.hor){S.erros=er;render();return;}
+  S.interacoes=verifica(r.nome,S.editId);
+  if(S.interacoes.length) ir("T07"); else confirmarMed();}
+function confirmarMed(){const r=S.rascunho;const nome=r.nome.charAt(0).toUpperCase()+r.nome.slice(1);
+  if(S.editId){Object.assign(S.meds.find(m=>m.id===S.editId),{nome,dose:r.dose||"—",hor:r.hor});}
+  else S.meds.push({id:Date.now(),nome,dose:r.dose||"—",hor:r.hor});
+  const ed=S.editId;S.pilha=[];ir("T08",true);toast(ed?"Medicamento atualizado. Interações verificadas novamente.":"Medicamento salvo. Lembretes agendados.");}
+function tomar(k){S.tomadas[k]=true;if(k==="1-08:00")S.alerta60=false;toast("Dose registrada ✔");}
+function sem60(){S.alerta60=true;delete S.tomadas["1-08:00"];
+  if(!S.vinc.cuid.length){toast("Nenhum cuidador vinculado. Aceite o pedido da Ana em Vínculos primeiro.");return;}
+  S.perfil="cuidadora";S.pilha=[];ir("T18",true);}
+function aceitar(id){const v=S.vinc;const p=v.pedidos.find(x=>x.id===id);v.pedidos=v.pedidos.filter(x=>x.id!==id);
+  if(p.papel==="médica")v.medico=p.nome;else v.cuid.push(p.nome);toast(p.nome+" agora te acompanha.");}
+function recusar(id){S.vinc.pedidos=S.vinc.pedidos.filter(x=>x.id!==id);toast("Pedido recusado. A pessoa não verá seus dados.");}
+function convidar(){const e=val("ie");const papel=document.querySelector(".seg button.on").textContent;S.vinc.convites.push({email:e,papel});S.pilha=[];ir("T11",true);toast("Convite enviado. Aguardando a pessoa aceitar.");}
+function pedir(){const med=S.perfil==="medica";const papel=med?"médica":"cuidadora";
+  if(!S.vinc.pedidos.some(p=>p.papel===papel)&&!(med?S.vinc.medico:S.vinc.cuid.length))S.vinc.pedidos.push({id:"p"+Date.now(),nome:med?"Dra. Helena Souza":"Ana Pereira",papel});
+  S.pilha=[];ir("T15",true);toast("Pedido enviado ao paciente.");}
+function abrirPac(){const med=S.perfil==="medica";if(!(med?S.vinc.medico:S.vinc.cuid.length)){toast("O paciente ainda não aceitou o vínculo.");return;}ir("T17");}
+
+/* ---------------- render ---------------- */
+function render(){
+  const el=document.getElementById("tela");el.style.setProperty("--esc",S.esc);
+  el.style.filter=S.contraste?"contrast(1.35)":"";
+  el.innerHTML=V[S.tela]()+(S.toast?`<div class="toast">${esc(S.toast)}</div>`:"");
+  const t=TELAS[S.tela];
+  document.getElementById("p-id").textContent=S.tela+(S.perfil?" · perfil: "+{paciente:"paciente",medica:"médica",cuidadora:"cuidadora"}[S.perfil]:"");
+  document.getElementById("p-nome").textContent=t.n;
+  document.getElementById("p-desc").textContent=t.d;
+  document.getElementById("p-h").innerHTML=t.h.length?t.h.map(h=>`<span class="hs" title="${esc(HIST[h])}">${h}. ${esc(HIST[h])}</span>`).join(""):'<span class="sub">— (requisito não funcional)</span>';
+  document.getElementById("p-r").innerHTML=t.r.map(r=>`<span class="rq" title="${esc(REQ[r]||"")}">${r}</span>`).join("")+`<div class="sub" style="margin-top:4px">${t.r.map(r=>r+": "+(REQ[r]||"")).join(" · ")}</div>`;
+  document.getElementById("p-lista").innerHTML=Object.keys(TELAS).map(k=>`<button class="${k===S.tela?'on':''}" onclick="pular('${k}')">${k} · ${TELAS[k].n}</button>`).join("");
+}
+function pular(k){
+  const prof=["T15","T16","T17","T18"].includes(k);
+  if(["T01","T02","T03"].includes(k)) S.perfil=null;
+  else if(prof){ if(S.perfil!=="medica"&&S.perfil!=="cuidadora") S.perfil=k==="T18"?"cuidadora":"medica";
+    if(k==="T17"||k==="T18"){ if(S.perfil==="medica"&&!S.vinc.medico){S.vinc.medico="Dra. Helena Souza";S.vinc.pedidos=S.vinc.pedidos.filter(p=>p.papel!=="médica");}
+      if(S.perfil==="cuidadora"&&!S.vinc.cuid.length){S.vinc.cuid.push("Ana Pereira");S.vinc.pedidos=S.vinc.pedidos.filter(p=>p.papel!=="cuidadora");} if(k==="T18")S.alerta60=true;}}
+  else if(k!=="T14"&&k!=="T13") S.perfil="paciente";
+  else if(!S.perfil) S.perfil="paciente";
+  if(k==="T06"){S.editId=null;S.rascunho={nome:"Ibuprofeno",dose:"400 mg",hor:["12:00"]};}
+  if(k==="T09"){editar(1);return;}
+  if(k==="T07"){S.editId=null;S.rascunho={nome:"Ibuprofeno",dose:"400 mg",hor:["12:00"]};S.interacoes=verifica("Ibuprofeno");}
+  S.pilha=[];ir(k,true);
+}
+
+/* ---------------- abas e documentos ---------------- */
+document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav.tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".secao").forEach(s=>s.classList.toggle("on",s.id==="sec-"+b.dataset.sec));
+  window.scrollTo(0,0);});
+document.getElementById("tab-rast").innerHTML=`<table><tr><th>Tela</th><th>Nome</th><th>Passos da história</th><th>Requisitos</th></tr>${Object.entries(TELAS).map(([k,t])=>`<tr><td><b>${k}</b></td><td>${t.n}</td><td>${t.h.join(", ")||"—"}</td><td>${t.r.join(", ")}</td></tr>`).join("")}</table>`;
+(function(){const rf=Object.keys(REQ).filter(r=>r.startsWith("RF"));
+  document.getElementById("tab-cob").innerHTML=`<table><tr><th>Requisito</th><th>Descrição</th><th>Telas</th></tr>${rf.map(r=>{const ts=Object.keys(TELAS).filter(k=>TELAS[k].r.includes(r));return `<tr><td><b>${r}</b></td><td>${REQ[r]}</td><td>${ts.join(", ")||'<span style="color:var(--grave)">não coberto</span>'}</td></tr>`}).join("")}</table>
+  <p class="sub">Requisitos não funcionais sem tela própria (RNF05 em branco na E2, RNF09, RNF13, RNF14, RNF15, RNF16) dizem respeito a desempenho, plataforma e infraestrutura, e serão verificados na implementação, não no protótipo.</p>`;})();
+/* rascunho do registro de validação (somente neste navegador) */
+document.querySelectorAll("td[contenteditable]").forEach(td=>{
+  try{const v=localStorage.getItem("dd-val-"+td.dataset.k); if(v) td.textContent=v;}catch(e){}
+  td.addEventListener("input",()=>{try{localStorage.setItem("dd-val-"+td.dataset.k,td.textContent);}catch(e){}});
+});
+render();
+</script>
+<script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";mermaid.initialize({startOnLoad:false});document.querySelector('[data-sec="fluxo"]').addEventListener("click",()=>setTimeout(()=>mermaid.run({querySelector:".mermaid:not([data-processed])"}),50));</script>
+</body>
+</html>
