@@ -116,13 +116,25 @@ export function validaMed({ nome, dose, horarios }) {
 }
 export function salvarMed(pid, dados, mid) {
   const limpo = { nome: dados.nome.trim(), dose: dados.dose.trim(), horarios: [...new Set(dados.horarios)].sort(), obs: (dados.obs || "").trim() };
-  if (mid) { Object.assign(med(mid), limpo, { atualizadoEm: agoraIso() }); salvar(); return med(mid); }
-  const m = { id: id(), pacienteId: pid, ...limpo, inicio: hojeStr(), criadoEm: agoraIso(), atualizadoEm: agoraIso(), ativo: true };
+  const ciencia = dados.ciencia ? { em: agoraIso(), lista: dados.ciencia } : null; // interações aceitas pelo paciente ao salvar
+  if (mid) {
+    const m = med(mid);
+    // guarda a dose antiga para o histórico continuar mostrando a dose da época
+    if (m.dose !== limpo.dose) (m.historicoDose ||= []).push({ ate: agoraIso(), dose: m.dose });
+    Object.assign(m, limpo, { atualizadoEm: agoraIso() }); if (ciencia) m.ciencia = ciencia;
+    salvar(); return m;
+  }
+  const m = { id: id(), pacienteId: pid, ...limpo, inicio: hojeStr(), criadoEm: agoraIso(), atualizadoEm: agoraIso(), ativo: true, ciencia };
   db.meds.push(m); salvar(); return m;
 }
 export function removerMed(mid) { const m = med(mid); if (m) { m.ativo = false; m.fim = hojeStr(); salvar(); } }
 
 // ---------- doses (RF05, RF12, RF15, RF16) ----------
+export const ANTECEDENCIA_MIN = 30; // "Tomei" libera 30 min antes do horário
+export function doseEm(m, quando) {
+  const h = (m.historicoDose || []).find(x => new Date(x.ate) > quando);
+  return h ? h.dose : m.dose;
+}
 // estado: tomada | pendente | atrasada (até 60 min) | nao_tomada (mais de 60 min)
 export function dosesDoDia(pid, dia, agora = new Date()) {
   const lista = [];
@@ -134,15 +146,20 @@ export function dosesDoDia(pid, dia, agora = new Date()) {
       if (!reg && quando < new Date(m.criadoEm)) continue; // horário anterior ao cadastro do remédio
       const min = (agora - quando) / 60000;
       let estado = reg ? "tomada" : min < 0 ? "pendente" : min <= 60 ? "atrasada" : "nao_tomada";
-      lista.push({ med: m, hora: h, dia, estado, reg, chave: `${m.id}|${dia}|${h}` });
+      lista.push({ med: m, hora: h, dia, estado, reg, chave: `${m.id}|${dia}|${h}`,
+        dose: reg?.dose || doseEm(m, quando), podeConfirmar: !reg && min >= -ANTECEDENCIA_MIN,
+        liberaAs: new Date(quando - ANTECEDENCIA_MIN * 60000).toTimeString().slice(0, 5) });
     }
   }
   return lista.sort((a, b) => a.hora.localeCompare(b.hora) || a.med.nome.localeCompare(b.med.nome));
 }
 export function confirmarDose(medId, dia, hora) {
   const m = med(medId);
-  if (db.doses.some(d => d.medId === medId && d.data === dia && d.hora === hora)) return;
-  db.doses.push({ id: id(), medId, pacienteId: m.pacienteId, data: dia, hora, tomadaEm: agoraIso() }); salvar();
+  if (db.doses.some(d => d.medId === medId && d.data === dia && d.hora === hora)) return { ok: true };
+  const quando = dataHora(dia, hora);
+  if (Date.now() < quando - ANTECEDENCIA_MIN * 60000) return { erro: `Esta dose só pode ser confirmada a partir de 30 minutos antes do horário.` };
+  db.doses.push({ id: id(), medId, pacienteId: m.pacienteId, data: dia, hora, dose: doseEm(m, quando), tomadaEm: agoraIso() }); salvar();
+  return { ok: true };
 }
 export function desfazerDose(medId, dia, hora) {
   db.doses = db.doses.filter(d => !(d.medId === medId && d.data === dia && d.hora === hora)); salvar();
@@ -211,7 +228,7 @@ export async function criarExemplo() {
     for (const m of meds) for (const h of m.horarios) {
       if (faltas.has(`${i}|${h}`)) continue;
       const t = dataHora(dia, h); t.setMinutes(t.getMinutes() + ((i * 7 + h.length) % 25));
-      db.doses.push({ id: id(), medId: m.id, pacienteId: j.id, data: dia, hora: h, tomadaEm: t.toISOString() });
+      db.doses.push({ id: id(), medId: m.id, pacienteId: j.id, data: dia, hora: h, dose: m.dose, tomadaEm: t.toISOString() });
     }
   }
   db.vinculos.push({ id: id(), pacienteId: j.id, profEmail: "ana@exemplo.com", profId: ids.cuidador, papel: "cuidador", iniciadoPor: "profissional", status: "ativo", criadoEm: agoraIso(), respondidoEm: agoraIso() });

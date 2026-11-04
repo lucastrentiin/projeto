@@ -1,0 +1,203 @@
+{
+ "versao": "2026-11-03",
+ "fonte": "Base reduzida montada para demonstração acadêmica. Não substitui bula, farmacêutico ou médico.",
+ "medicamentos": [
+  "AAS",
+  "Amiodarona",
+  "Anlodipino",
+  "Atenolol",
+  "Captopril",
+  "Carbonato de cálcio",
+  "Claritromicina",
+  "Clopidogrel",
+  "Diclofenaco",
+  "Digoxina",
+  "Dipirona",
+  "Enalapril",
+  "Espironolactona",
+  "Fluoxetina",
+  "Furosemida",
+  "Glibenclamida",
+  "Hidroclorotiazida",
+  "Ibuprofeno",
+  "Insulina NPH",
+  "Isossorbida",
+  "Levotiroxina",
+  "Losartana",
+  "Metformina",
+  "Naproxeno",
+  "Omeprazol",
+  "Paracetamol",
+  "Prednisona",
+  "Sertralina",
+  "Sildenafila",
+  "Sinvastatina",
+  "Sulfato ferroso",
+  "Tramadol",
+  "Varfarina"
+ ],
+ "interacoes": [
+  {
+   "a": "Varfarina",
+   "b": "AAS",
+   "gravidade": "grave",
+   "texto": "Aumenta muito o risco de sangramento."
+  },
+  {
+   "a": "Varfarina",
+   "b": "Ibuprofeno",
+   "gravidade": "grave",
+   "texto": "Aumenta muito o risco de sangramento, inclusive no estômago."
+  },
+  {
+   "a": "Varfarina",
+   "b": "Diclofenaco",
+   "gravidade": "grave",
+   "texto": "Aumenta muito o risco de sangramento."
+  },
+  {
+   "a": "Varfarina",
+   "b": "Naproxeno",
+   "gravidade": "grave",
+   "texto": "Aumenta muito o risco de sangramento."
+  },
+  {
+   "a": "Varfarina",
+   "b": "Paracetamol",
+   "gravidade": "moderada",
+   "texto": "Uso frequente de paracetamol pode aumentar o efeito da varfarina."
+  },
+  {
+   "a": "Sildenafila",
+   "b": "Isossorbida",
+   "gravidade": "grave",
+   "texto": "Pode causar queda forte da pressão arterial."
+  },
+  {
+   "a": "Sertralina",
+   "b": "Tramadol",
+   "gravidade": "grave",
+   "texto": "Risco de síndrome serotoninérgica e de convulsões."
+  },
+  {
+   "a": "Fluoxetina",
+   "b": "Tramadol",
+   "gravidade": "grave",
+   "texto": "Risco de síndrome serotoninérgica e de convulsões."
+  },
+  {
+   "a": "Sinvastatina",
+   "b": "Claritromicina",
+   "gravidade": "grave",
+   "texto": "Aumenta o risco de dano muscular grave."
+  },
+  {
+   "a": "Digoxina",
+   "b": "Amiodarona",
+   "gravidade": "grave",
+   "texto": "Pode elevar a digoxina no sangue a níveis tóxicos."
+  },
+  {
+   "a": "Enalapril",
+   "b": "Espironolactona",
+   "gravidade": "grave",
+   "texto": "Pode elevar o potássio no sangue a níveis perigosos."
+  },
+  {
+   "a": "Losartana",
+   "b": "Espironolactona",
+   "gravidade": "moderada",
+   "texto": "Pode elevar o potássio no sangue."
+  },
+  {
+   "a": "Losartana",
+   "b": "Ibuprofeno",
+   "gravidade": "moderada",
+   "texto": "Pode reduzir o efeito sobre a pressão e sobrecarregar os rins."
+  },
+  {
+   "a": "Losartana",
+   "b": "Diclofenaco",
+   "gravidade": "moderada",
+   "texto": "Pode reduzir o efeito sobre a pressão e sobrecarregar os rins."
+  },
+  {
+   "a": "Enalapril",
+   "b": "Ibuprofeno",
+   "gravidade": "moderada",
+   "texto": "Pode reduzir o efeito sobre a pressão e sobrecarregar os rins."
+  },
+  {
+   "a": "Captopril",
+   "b": "Ibuprofeno",
+   "gravidade": "moderada",
+   "texto": "Pode reduzir o efeito sobre a pressão e sobrecarregar os rins."
+  },
+  {
+   "a": "Clopidogrel",
+   "b": "Omeprazol",
+   "gravidade": "moderada",
+   "texto": "O omeprazol pode reduzir o efeito do clopidogrel."
+  },
+  {
+   "a": "Clopidogrel",
+   "b": "AAS",
+   "gravidade": "moderada",
+   "texto": "Aumenta o risco de sangramento; o uso conjunto deve ser orientado pelo médico."
+  },
+  {
+   "a": "AAS",
+   "b": "Ibuprofeno",
+   "gravidade": "moderada",
+   "texto": "Aumenta o risco de sangramento e pode reduzir o efeito protetor do AAS."
+  },
+  {
+   "a": "Sinvastatina",
+   "b": "Anlodipino",
+   "gravidade": "moderada",
+   "texto": "Pode aumentar o efeito da sinvastatina; costuma exigir dose limitada."
+  },
+  {
+   "a": "Metformina",
+   "b": "Prednisona",
+   "gravidade": "moderada",
+   "texto": "A prednisona pode aumentar a glicose e reduzir o controle do diabetes."
+  },
+  {
+   "a": "Glibenclamida",
+   "b": "Prednisona",
+   "gravidade": "moderada",
+   "texto": "A prednisona pode aumentar a glicose e reduzir o controle do diabetes."
+  },
+  {
+   "a": "Levotiroxina",
+   "b": "Carbonato de cálcio",
+   "gravidade": "moderada",
+   "texto": "Reduz a absorção da levotiroxina. Tomar com 4 horas de intervalo."
+  },
+  {
+   "a": "Levotiroxina",
+   "b": "Sulfato ferroso",
+   "gravidade": "moderada",
+   "texto": "Reduz a absorção da levotiroxina. Tomar com 4 horas de intervalo."
+  },
+  {
+   "a": "Levotiroxina",
+   "b": "Omeprazol",
+   "gravidade": "leve",
+   "texto": "Pode reduzir um pouco a absorção da levotiroxina."
+  },
+  {
+   "a": "Atenolol",
+   "b": "Ibuprofeno",
+   "gravidade": "leve",
+   "texto": "Pode reduzir um pouco o efeito sobre a pressão."
+  },
+  {
+   "a": "Furosemida",
+   "b": "Ibuprofeno",
+   "gravidade": "leve",
+   "texto": "Pode reduzir um pouco o efeito diurético."
+  }
+ ]
+}

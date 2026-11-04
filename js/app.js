@@ -1,5 +1,6 @@
 import * as S from "./store.js";
-import { CATALOGO, verificaInteracoes } from "./dados.js";
+import * as D from "./dados.js";
+const { verificaInteracoes, paresDaLista, interacoesDaLista, piorGravidade } = D;
 
 // ================= utilitários =================
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -74,6 +75,12 @@ function confirmar({ titulo, texto, ok = "Confirmar", perigo = false }) {
     m.querySelector("[data-s]").onclick = () => { fecharModal(); res(true); };
   });
 }
+
+// Erro de campo some assim que a pessoa corrige o campo
+document.addEventListener("input", e => {
+  const el = e.target; if (el.getAttribute?.("aria-invalid") !== "true") return;
+  el.setAttribute("aria-invalid", "false"); el.closest(".field")?.querySelector(".err")?.remove();
+});
 
 // ================= preferências de leitura (RNF11, RNF12) =================
 function aplicarPrefs() {
@@ -281,15 +288,20 @@ rota("/hoje", "T05", u => {
   if (!doses.length) {
     corpo += `<div class="panel"><div class="empty">${ic("pilula")}<h3>Nenhum remédio cadastrado</h3><p>Cadastre o primeiro remédio para receber os lembretes.</p><a class="btn btn-primary" href="#/medicamentos/novo">${ic("mais")}Cadastrar remédio</a></div></div>`;
   } else {
+    const perdidas = doses.filter(d => d.estado === "nao_tomada");
+    const botaoProx = prox && (prox.podeConfirmar
+      ? `<button class="btn" data-tomar="${prox.chave}">${ic("check")}Tomei</button>`
+      : `<span class="small" style="opacity:.9">Confirmação libera às ${prox.liberaAs}</span>`);
+    if (perdidas.length) corpo += `<div class="alert alert-danger" style="margin-bottom:16px">${ic("alerta")}<span><b>${perdidas.length === 1 ? "1 dose de hoje não foi confirmada" : perdidas.length + " doses de hoje não foram confirmadas"}</b> (${perdidas.map(d => d.hora + " " + esc(d.med.nome)).join(", ")}). Se você tomou, confirme na lista abaixo.</span></div>`;
     corpo += prox
-      ? `<div class="proxima" aria-live="polite"><div class="grow"><div class="small" style="opacity:.85">${prox.estado === "atrasada" ? "Dose aguardando confirmação" : "Próxima dose"}</div><div class="h">${prox.hora}</div><div style="font-weight:650;margin-top:4px">${esc(prox.med.nome)} · ${esc(prox.med.dose)}</div></div>
-         <button class="btn" data-tomar="${prox.chave}">${ic("check")}Tomei</button></div>`
-      : `<div class="alert alert-ok">${ic("check")}<span><b>Tudo certo por hoje.</b> Nenhuma dose pendente.</span></div>`;
+      ? `<div class="proxima" aria-live="polite"><div class="grow"><div class="small" style="opacity:.85">${prox.estado === "atrasada" ? "Dose aguardando confirmação" : "Próxima dose"}</div><div class="h">${prox.hora}</div><div style="font-weight:650;margin-top:4px">${esc(prox.med.nome)} · ${esc(prox.dose)}</div></div>${botaoProx}</div>`
+      : perdidas.length ? "" : `<div class="alert alert-ok">${ic("check")}<span><b>Tudo certo por hoje.</b> Todas as doses foram confirmadas.</span></div>`;
     corpo += `<section class="section"><div class="row" style="justify-content:space-between;margin-bottom:12px"><h2>Doses de hoje</h2><span class="muted small">${tomadas} de ${doses.length} tomadas</span></div>
-      <div class="panel"><ul class="list">${doses.map(d => `<li><span class="hora">${d.hora}</span><div class="grow"><div class="trunc"><b>${esc(d.med.nome)}</b> <span class="small muted">${esc(d.med.dose)}</span></div><div class="linha2">${d.estado === "tomada" ? statusTag("tomada", "Tomada às " + hhmm(d.reg.tomadaEm)) : statusTag(d.estado, d.estado === "nao_tomada" ? "Atrasada" : null)}</div></div>
+      <div class="panel"><ul class="list">${doses.map(d => `<li><span class="hora">${d.hora}</span><div class="grow"><div class="trunc"><b>${esc(d.med.nome)}</b> <span class="small muted">${esc(d.dose)}</span></div><div class="linha2">${d.estado === "tomada" ? statusTag("tomada", "Tomada às " + hhmm(d.reg.tomadaEm)) : statusTag(d.estado)}</div></div>
         ${d.estado === "tomada" ? `<button class="icon-btn" title="Desfazer" aria-label="Desfazer confirmação de ${esc(d.med.nome)} ${d.hora}" data-desfazer="${d.chave}">${ic("x")}</button>`
-          : d.estado === "pendente" ? `<button class="btn btn-secondary btn-sm" data-tomar="${d.chave}" aria-label="Marcar ${esc(d.med.nome)} ${d.hora} como tomada">Tomei</button>`
-          : `<button class="btn btn-primary btn-sm" data-tomar="${d.chave}" aria-label="Marcar ${esc(d.med.nome)} ${d.hora} como tomada">Tomei</button>`}</li>`).join("")}</ul></div></section>
+          : !d.podeConfirmar ? `<span class="small muted" style="text-align:right">Libera<br>às ${d.liberaAs}</span>`
+          : `<button class="btn ${d.estado === "pendente" ? "btn-secondary" : "btn-primary"} btn-sm" data-tomar="${d.chave}" aria-label="Marcar ${esc(d.med.nome)} ${d.hora} como tomada">Tomei</button>`}</li>`).join("")}</ul></div>
+      <p class="small muted" style="margin-top:8px">A confirmação de cada dose libera 30 minutos antes do horário.</p></section>
       <div style="margin-top:16px"><a class="btn btn-secondary" href="#/medicamentos/novo">${ic("mais")}Adicionar remédio</a></div>`;
   }
   app.innerHTML = layout(u, `Olá, ${primeiroNome(u.nome)}`, corpo, "/hoje");
@@ -299,7 +311,9 @@ rota("/hoje", "T05", u => {
 
 function ligarDoses() {
   app.querySelectorAll("[data-tomar]").forEach(b => b.onclick = () => {
-    const [mid, dia, hora] = b.dataset.tomar.split("|"); S.confirmarDose(mid, dia, hora); render();
+    const [mid, dia, hora] = b.dataset.tomar.split("|"); const r = S.confirmarDose(mid, dia, hora);
+    if (r.erro) return toast(r.erro);
+    render();
     toast("Dose registrada.", { texto: "Desfazer", fn: () => { S.desfazerDose(mid, dia, hora); render(); } });
   });
   app.querySelectorAll("[data-desfazer]").forEach(b => b.onclick = () => { const [mid, dia, hora] = b.dataset.desfazer.split("|"); S.desfazerDose(mid, dia, hora); render(); toast("Confirmação desfeita."); });
@@ -310,10 +324,33 @@ rota("/medicamentos", "T08", u => {
   const meds = S.medsDe(u.id);
   const corpo = meds.length
     ? `<div class="row" style="justify-content:space-between;margin-bottom:16px"><p class="t2" style="margin:0">${meds.length} remédio${meds.length > 1 ? "s" : ""} em uso</p><a class="btn btn-primary" href="#/medicamentos/novo">${ic("mais")}Adicionar</a></div>
-       <div class="panel"><ul class="list">${meds.map(m => `<li><a class="li-link" href="#/medicamentos/${m.id}"><div class="grow"><div class="trunc"><b>${esc(m.nome)}</b> · ${esc(m.dose)}</div><div class="small muted">${m.horarios.join(" · ")}${m.obs ? " · " + esc(m.obs) : ""}</div></div><span class="muted">${ic("seta", 'width="20" height="20"')}</span></a></li>`).join("")}</ul></div>`
+       ${blocoInteracoes(meds, "paciente")}
+       <div class="panel"><ul class="list">${linhasMeds(meds, true)}</ul></div>`
     : `<div class="panel"><div class="empty">${ic("pilula")}<h3>Nenhum remédio cadastrado</h3><p>Leva menos de um minuto: nome, dose e horários.</p><a class="btn btn-primary" href="#/medicamentos/novo">${ic("mais")}Cadastrar remédio</a></div></div>`;
   app.innerHTML = layout(u, "Meus remédios", corpo, "/medicamentos");
 }, { papel: ["paciente"] });
+
+// Interações entre os remédios em uso (RF06): visíveis depois de salvar, para paciente, médico e cuidador
+const SEV_TXT = { grave: "Interação grave", moderada: "Interação moderada", leve: "Interação leve" };
+function linhasMeds(meds, link) {
+  const mapa = interacoesDaLista(meds);
+  return meds.map(m => {
+    const it = mapa[m.id]; const pior = piorGravidade(it.lista);
+    const selo = pior ? `<span class="sev sev-${pior}">${SEV_TXT[pior]}</span>` : !it.reconhecido ? `<span class="status st-pendente">Fora da base</span>` : "";
+    const conteudo = `<div class="grow"><div class="trunc"><b>${esc(m.nome)}</b> · ${esc(m.dose)}</div><div class="small muted">${m.horarios.join(" · ")}${m.obs ? " · " + esc(m.obs) : ""}</div>${selo ? `<div class="linha2">${selo}</div>` : ""}</div>`;
+    return link ? `<li><a class="li-link" href="#/medicamentos/${m.id}">${conteudo}<span class="muted">${ic("seta", 'width="20" height="20"')}</span></a></li>` : `<li>${conteudo}</li>`;
+  }).join("");
+}
+function blocoInteracoes(meds, quem) {
+  const pares = paresDaLista(meds);
+  if (!pares.length) return "";
+  const ciente = (a, b) => meds.find(m => (m.nome === a || m.nome === b) && m.ciencia?.lista?.some(c => c.com === a || c.com === b));
+  return `<section class="panel panel-b" style="margin-bottom:16px" aria-labelledby="t-inter">
+    <h2 id="t-inter" style="margin-bottom:4px">Interações entre ${quem === "paciente" ? "seus remédios" : "os remédios em uso"}</h2>
+    <p class="small t2">${quem === "paciente" ? "Converse com seu médico ou farmacêutico. Não pare nem mude remédios por conta própria." : "Possíveis interações identificadas pelo app na lista atual do paciente."}</p>
+    <div class="stack">${pares.map(x => { const c = ciente(x.a, x.b); return `<div class="inter ${x.gravidade}"><span class="sev sev-${x.gravidade}">${x.gravidade}</span><h3 style="margin:6px 0 2px">${esc(x.a)} + ${esc(x.b)}</h3><div class="t2 small">${esc(x.texto)}</div>${c ? `<div class="small muted" style="margin-top:4px">Paciente salvo ciente do alerta em ${PT_CURTA.format(new Date(c.ciencia.em))}.</div>` : ""}</div>`; }).join("")}</div>
+    <p class="small muted" style="margin-top:10px">Base de interações versão ${esc(D.BASE.versao)} (demonstração).</p></section>`;
+}
 
 // ================= T06 / T09 Cadastro e edição + T07 alerta =================
 function formMed(u, mid) {
@@ -327,7 +364,7 @@ function formMed(u, mid) {
   const desenha = () => {
     const corpo = `<form class="panel panel-b" novalidate style="max-width:560px">
       <div class="field"><label for="nome">Nome do remédio</label><input id="nome" list="catalogo" autocomplete="off" value="${esc(v.nome)}" placeholder="Ex.: Losartana" aria-invalid="${!!erros.nome}">
-        <datalist id="catalogo">${CATALOGO.map(c => `<option value="${c}">`).join("")}</datalist>
+        <datalist id="catalogo">${D.CATALOGO.map(c => `<option value="${c}">`).join("")}</datalist>
         <div class="hint">Comece a digitar e escolha da lista. Assim conseguimos verificar as interações.</div>${erroCampo(erros.nome)}</div>
       <div class="field"><label for="dose">Dose</label><input id="dose" value="${esc(v.dose)}" placeholder="Ex.: 50 mg ou 1 comprimido" aria-invalid="${!!erros.dose}">${erroCampo(erros.dose)}</div>
       <div class="field"><span class="label" id="lbl-h">Horários</span>
@@ -353,11 +390,12 @@ function formMed(u, mid) {
       const outros = S.medsDe(u.id).filter(m => m.id !== mid);
       const dup = outros.find(m => m.nome.toLowerCase() === v.nome.trim().toLowerCase());
       const r = verificaInteracoes(v.nome, outros);
-      if (r.lista.length || !r.reconhecido || dup) alertaInteracao(r, v, dup, () => concluir());
+      if (r.lista.length || !r.reconhecido || dup) alertaInteracao(r, v, dup, () => concluir(r.lista));
       else concluir();
     };
   };
-  const concluir = () => {
+  const concluir = (lista = []) => {
+    v.ciencia = lista.length ? lista.map(i => ({ com: i.com, gravidade: i.gravidade })) : null;
     S.salvarMed(u.id, v, mid); fecharModal(); ir("/medicamentos");
     toast(existente ? "Alterações salvas. Interações verificadas de novo." : `${v.nome.trim()} salvo. Os lembretes já estão agendados.`);
   };
@@ -373,7 +411,7 @@ function alertaInteracao(r, v, dup, salvar) {
       <div class="stack">${r.lista.map(i => `<div class="inter ${i.gravidade}"><span class="sev sev-${i.gravidade}">${i.gravidade}</span><h3 style="margin:8px 0 4px">${esc(v.nome)} + ${esc(i.com)}</h3><div class="t2">${esc(i.texto)}</div></div>`).join("")}</div>
       <div class="alert alert-info" style="margin-top:12px">${ic("info")}<span>${grave ? "<b>Não comece a usar sem falar com seu médico.</b> " : ""}Não pare nem mude nenhum remédio por conta própria. Converse com seu médico ou farmacêutico.</span></div>
       ${grave ? `<label class="check" style="margin-top:12px"><input type="checkbox" id="ciente"><span>Entendi o risco e vou conversar com meu médico.</span></label>` : ""}
-      <p class="small muted" style="margin-top:12px">Base de interações reduzida, só para demonstração.</p>` : ""}
+      <p class="small muted" style="margin-top:12px">Base de interações versão ${esc(D.BASE.versao)} · reduzida, só para demonstração. O alerta fica visível na sua lista de remédios e para o seu médico e cuidador.</p>` : ""}
     <div class="modal-acoes"><button class="btn btn-secondary" data-revisar autofocus>Voltar e revisar</button><button class="btn btn-primary" data-salvar ${grave ? "disabled" : ""}>Salvar mesmo assim</button></div>`);
   m.querySelector("[data-revisar]").onclick = fecharModal;
   m.querySelector("[data-salvar]").onclick = salvar;
@@ -391,7 +429,7 @@ function historicoHTML(pid, dias, filtro) {
     if (filtro) ds = ds.filter(d => d.med.id === filtro);
     tom += ds.filter(d => d.estado === "tomada").length; nao += ds.filter(d => d.estado === "nao_tomada").length;
     if (ds.length) blocos.push(`<div class="dia"><h3>${i === 0 ? "Hoje" : i === 1 ? "Ontem" : fmtDia(dia)}</h3><div class="panel"><ul class="list">${ds.map(d =>
-      `<li><span class="hora">${d.hora}</span><div class="grow"><div class="trunc"><b>${esc(d.med.nome)}</b> <span class="muted small">${esc(d.med.dose)}</span></div><div class="linha2">${d.estado === "tomada" ? statusTag("tomada", "Tomada às " + hhmm(d.reg.tomadaEm)) : statusTag("nao_tomada")}</div></div></li>`).join("")}</ul></div></div>`);
+      `<li><span class="hora">${d.hora}</span><div class="grow"><div class="trunc"><b>${esc(d.med.nome)}</b> <span class="muted small">${esc(d.dose)}</span></div><div class="linha2">${d.estado === "tomada" ? statusTag("tomada", "Tomada às " + hhmm(d.reg.tomadaEm)) : statusTag("nao_tomada")}</div></div></li>`).join("")}</ul></div></div>`);
   }
   const total = tom + nao;
   if (!total) return `<div class="panel"><div class="empty">${ic("historico")}<h3>Ainda não há histórico</h3><p>As doses aparecem aqui depois do horário de cada uma.</p></div></div>`;
@@ -529,9 +567,13 @@ rota("/buscar", "T16", u => {
     const corpo = `<form class="panel panel-b" novalidate style="max-width:560px">
       <p class="t2">Digite o e-mail que o paciente usa no Dose Dupla. Ele recebe seu pedido e decide se aceita.</p>
       <div class="field"><label for="bemail">E-mail do paciente</label><div class="row"><input id="bemail" type="email" value="${esc(email)}" class="grow"><button class="btn btn-secondary">${ic("busca")}Buscar</button></div>${msg ? erroCampo(msg) : ""}</div>
-      ${achado ? `<div class="panel panel-b" style="background:var(--surface-2)"><b>${esc(achado.nome)}</b><div class="small muted">${esc(achado.email)}</div>
+      ${achado ? (() => { const ja = S.vinculosDoProf(u.id).find(v => v.pacienteId === achado.id && ["ativo", "pendente"].includes(v.status));
+        if (ja) return `<div class="panel panel-b" style="background:var(--surface-2)"><b>${esc(achado.nome)}</b><div class="small muted">${esc(achado.email)}</div>
+          <div class="linha2" style="margin:8px 0 12px">${ja.status === "ativo" ? statusTag("tomada", "Você já acompanha este paciente") : `<span class="status st-pendente">${ja.iniciadoPor === "paciente" ? "Convite do paciente esperando sua resposta" : "Pedido enviado, aguardando o paciente"}</span>`}</div>
+          <a class="btn btn-primary" href="#/${ja.status === "ativo" ? "pacientes/" + achado.id : "pacientes"}">${ja.status === "ativo" ? "Abrir ficha" : "Ver em Meus pacientes"}</a></div>`;
+        return `<div class="panel panel-b" style="background:var(--surface-2)"><b>${esc(achado.nome)}</b><div class="small muted">${esc(achado.email)}</div>
         <p class="small t2" style="margin:8px 0 12px">Você só verá os remédios e o histórico depois que ${esc(primeiroNome(achado.nome))} aceitar.</p>
-        <button type="button" class="btn btn-primary" data-pedir>Enviar pedido para acompanhar</button></div>` : ""}
+        <button type="button" class="btn btn-primary" data-pedir>Enviar pedido para acompanhar</button></div>`; })() : ""}
     </form>`;
     app.innerHTML = layout(u, "Buscar paciente", corpo, "/buscar");
     $("form").onsubmit = e => { e.preventDefault(); const em = $("#bemail").value.trim().toLowerCase(); const p = S.porEmail(em);
@@ -552,10 +594,11 @@ rota("/pacientes/:id", "T17", (u, pid) => {
   const desenha = () => {
     const meds = S.medsDe(pid); const doses = S.dosesDoDia(pid, S.hojeStr());
     let aba = "";
-    if (st.aba === "hoje") aba = doses.length ? `<div class="panel"><ul class="list">${doses.map(d => `<li><span class="hora">${d.hora}</span><div class="grow"><div class="trunc"><b>${esc(d.med.nome)}</b> <span class="muted small">${esc(d.med.dose)}</span></div><div class="linha2">${statusTag(d.estado, d.estado === "tomada" ? "Tomada às " + hhmm(d.reg.tomadaEm) : null)}</div></div></li>`).join("")}</ul></div>` : `<div class="panel"><div class="empty"><h3>Sem doses hoje</h3></div></div>`;
-    if (st.aba === "remedios") aba = meds.length ? `<div class="panel"><ul class="list">${meds.map(m => `<li><div class="grow"><b>${esc(m.nome)}</b> · ${esc(m.dose)}<div class="small muted">${m.horarios.join(" · ")}${m.obs ? " · " + esc(m.obs) : ""}</div></div></li>`).join("")}</ul></div>` : `<div class="panel"><div class="empty"><h3>Nenhum remédio cadastrado</h3></div></div>`;
+    if (st.aba === "hoje") aba = doses.length ? `<div class="panel"><ul class="list">${doses.map(d => `<li><span class="hora">${d.hora}</span><div class="grow"><div class="trunc"><b>${esc(d.med.nome)}</b> <span class="muted small">${esc(d.dose)}</span></div><div class="linha2">${statusTag(d.estado, d.estado === "tomada" ? "Tomada às " + hhmm(d.reg.tomadaEm) : null)}</div></div></li>`).join("")}</ul></div>` : `<div class="panel"><div class="empty"><h3>Sem doses hoje</h3></div></div>`;
+    if (st.aba === "remedios") aba = meds.length ? `${blocoInteracoes(meds, "prof")}<div class="panel"><ul class="list">${linhasMeds(meds, false)}</ul></div>` : `<div class="panel"><div class="empty"><h3>Nenhum remédio cadastrado</h3></div></div>`;
     if (st.aba === "historico") aba = filtrosHistorico(pid, st.dias, st.filtro) + historicoHTML(pid, st.dias, st.filtro);
     const corpo = `<div class="small t2" style="margin-bottom:12px">${esc(p.email)} · você acompanha como ${v.papel === "medico" ? "médico(a) responsável" : "cuidador(a)"}</div>
+      ${(() => { const pares = paresDaLista(meds); return pares.length && st.aba !== "remedios" ? `<div class="alert alert-${piorGravidade(pares) === "grave" ? "danger" : "warn"}" style="margin-bottom:12px">${ic("alerta")}<div><b>${pares.length} possível${pares.length > 1 ? "is" : ""} interaç${pares.length > 1 ? "ões" : "ão"} entre os remédios em uso</b> (${pares.map(x => esc(x.a) + " + " + esc(x.b)).join("; ")}).<br><button class="btn btn-secondary btn-sm" data-aba="remedios">Ver detalhes</button></div></div>` : ""; })()}
       <div class="alert alert-info" style="margin-bottom:16px">${ic("escudo")}<span>Este acesso foi registrado e ${esc(primeiroNome(p.nome))} pode ver quem abriu os dados dele.</span></div>
       <div class="tabs" role="tablist">${[["hoje", "Hoje"], ["remedios", "Remédios"], ["historico", "Histórico"]].map(([k, t]) => `<button role="tab" aria-selected="${st.aba === k}" data-aba="${k}">${t}</button>`).join("")}</div>${aba}`;
     app.innerHTML = layout(u, p.nome, corpo, "/pacientes", "/pacientes");
@@ -581,9 +624,9 @@ function verificarLembretes() {
     const devidas = S.dosesDoDia(u.id, hoje).filter(d => d.estado === "atrasada" && !avisados.has(d.chave));
     if (!devidas.length || document.querySelector(".modal-bg")) return;
     devidas.forEach(d => marcaAvisado(d.chave));
-    notificar("Hora do seu remédio", devidas.map(d => `${d.med.nome} ${d.med.dose} · ${d.hora}`).join("\n"), "dose-" + hoje);
+    notificar("Hora do seu remédio", devidas.map(d => `${d.med.nome} ${d.dose} · ${d.hora}`).join("\n"), "dose-" + hoje);
     const m = modal(`<div class="row" style="margin-bottom:8px;color:var(--brand)">${ic("sino", 'width="28" height="28"')}<h2 id="modal-t">Hora do seu remédio</h2></div>
-      <div class="panel"><ul class="list">${devidas.map(d => `<li><span class="hora">${d.hora}</span><div class="grow"><b>${esc(d.med.nome)}</b><div class="small muted">${esc(d.med.dose)}${d.med.obs ? " · " + esc(d.med.obs) : ""}</div></div></li>`).join("")}</ul></div>
+      <div class="panel"><ul class="list">${devidas.map(d => `<li><span class="hora">${d.hora}</span><div class="grow"><b>${esc(d.med.nome)}</b><div class="small muted">${esc(d.dose)}${d.med.obs ? " · " + esc(d.med.obs) : ""}</div></div></li>`).join("")}</ul></div>
       <div class="modal-acoes"><button class="btn btn-secondary" data-depois>Lembrar em 10 min</button><button class="btn btn-primary" data-tomei autofocus>${ic("check")}Tomei</button></div>`);
     m.querySelector("[data-tomei]").onclick = () => { devidas.forEach(d => S.confirmarDose(d.med.id, d.dia, d.hora)); fecharModal(); render(); toast("Dose registrada."); };
     m.querySelector("[data-depois]").onclick = () => { fecharModal(); setTimeout(() => { devidas.forEach(d => { avisados.delete(d.chave); }); verificarLembretes(); }, 10 * 60000); toast("Vamos lembrar de novo em 10 minutos."); };
@@ -602,5 +645,7 @@ setInterval(() => { verificarLembretes(); if (!document.querySelector(".modal-bg
 
 // ================= início =================
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});
-render();
-setTimeout(verificarLembretes, 800);
+D.carregarBase().then(ok => {
+  render(); setTimeout(verificarLembretes, 800);
+  if (!ok) toast("Não foi possível carregar a base de interações. Verifique a internet.");
+});

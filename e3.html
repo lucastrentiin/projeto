@@ -37,9 +37,9 @@ td[contenteditable]:empty::before{content:"preencher";color:#a39e8a;font-style:i
   <h1>E3 · Protótipo e validação</h1>
   <p>Engenharia de Software · Sistemas de Informação · Unochapecó<br>
   Equipe: Camila Siviero, Leonardo Ribas, Eduarda Cristine Vargas, Gabriel Mezzomo Oliboni, Lucas Trentin Avila e Wellinton Davi da Costa<br>
-  Versão 2.0 · 03/11/2026</p>
+  Versão 2.1 · 03/11/2026</p>
   <div class="acoes"><a class="btn btn-primary" href="index.html?telas#/entrar">Abrir o protótipo</a><button class="btn btn-secondary" onclick="window.print()">Imprimir / salvar PDF</button></div>
-  <nav class="indice" aria-label="Seções"><a href="#prototipo">1. Protótipo</a><a href="#fluxo">2. Fluxo de navegação</a><a href="#telas">3. Telas × histórias × requisitos</a><a href="#roteiro">4. Roteiro de validação</a><a href="#registro">5. Registro da validação</a></nav>
+  <nav class="indice" aria-label="Seções"><a href="#prototipo">1. Protótipo</a><a href="#fluxo">2. Fluxo de navegação</a><a href="#telas">3. Telas × histórias × requisitos</a><a href="#roteiro">4. Roteiro de validação</a><a href="#registro">5. Registro da validação</a><a href="#ajustes">6. Ajustes decididos</a><a href="#limites">7. Limitações conhecidas</a></nav>
 </header>
 
 <h2 id="prototipo">1. Protótipo</h2>
@@ -72,7 +72,7 @@ td[contenteditable]:empty::before{content:"preencher";color:#a39e8a;font-style:i
 <div class="tbl"><table id="tab-telas"></table></div>
 <h3>Cobertura dos requisitos</h3>
 <div class="tbl"><table id="tab-req"></table></div>
-<p class="small">Requisitos de infraestrutura (RNF09 tempo de resposta, RNF13 Android/iOS, RNF14 atualizar base sem nova versão, RNF15 disponibilidade, RNF16 backup) não são verificáveis num protótipo e ficam para a implementação. RNF05 está sem texto na E2.</p>
+<p class="small">Requisitos de infraestrutura (RNF09 tempo de resposta, RNF13 Android/iOS, RNF15 disponibilidade, RNF16 backup) não são verificáveis num protótipo e ficam para a implementação. RNF05 está sem texto na E2.</p>
 
 <h2 id="roteiro">4. Roteiro de validação</h2>
 <p><b>Objetivo:</b> verificar se uma pessoa do público-alvo consegue, sem ajuda, completar os fluxos centrais e entender os alertas.</p>
@@ -109,6 +109,30 @@ td[contenteditable]:empty::before{content:"preencher";color:#a39e8a;font-style:i
 <tr><td>A2</td><td contenteditable data-k="a2a"></td><td contenteditable data-k="a2b"></td><td contenteditable data-k="a2c"></td><td contenteditable data-k="a2d"></td></tr>
 <tr><td>A3</td><td contenteditable data-k="a3a"></td><td contenteditable data-k="a3b"></td><td contenteditable data-k="a3c"></td><td contenteditable data-k="a3d"></td></tr>
 </table></div>
+
+<h2 id="ajustes">6. Ajustes decididos a partir da validação</h2>
+<p>Validação funcional feita pela equipe em 03/11/2026, das 20h45 às 21h05, com os três perfis de exemplo, conferindo os requisitos RF01 a RF17 e RNF01 a RNF16 (relatório de validação com 29 prints). Resultado: 23 requisitos atendidos, 5 atendidos em parte, 1 não atendido e 4 sem texto ou não aplicáveis. Os problemas encontrados geraram as decisões abaixo, já aplicadas na versão 2.1.</p>
+<div class="tbl"><table>
+<tr><th>ID</th><th>Retorno da validação</th><th>Tela · requisito</th><th>Decisão da equipe</th><th>Situação</th></tr>
+<tr><td>V1</td><td>A interação aparecia só no cadastro. Depois de salvo, nem o paciente nem a médica e a cuidadora viam o alerta.</td><td>T08, T17 · RF06</td><td>Mostrar selo de gravidade em cada remédio e um quadro de interações na lista do paciente e na ficha vista pela médica e pela cuidadora, com a data em que o paciente salvou ciente do alerta.</td><td>Feito</td></tr>
+<tr><td>V2</td><td>A tela Hoje dizia "Tudo certo, nenhuma dose pendente" com doses do dia não tomadas, e a mesma dose aparecia como "Atrasada" em Hoje e "Não tomada" no histórico.</td><td>T05 · RF12, RF15</td><td>Usar o mesmo estado em todas as telas e mostrar aviso das doses não confirmadas no topo da tela Hoje.</td><td>Feito</td></tr>
+<tr><td>V3</td><td>Era possível confirmar a dose das 22:00 às 20:49.</td><td>T05, T10 · RF12</td><td>Liberar "Tomei" só a partir de 30 minutos antes do horário (regra também no armazenamento).</td><td>Feito</td></tr>
+<tr><td>V4</td><td>Depois de mudar a dose, o histórico antigo passava a mostrar a dose nova.</td><td>T13, T17 · RF15</td><td>Gravar a dose em cada registro e guardar o histórico de doses do remédio.</td><td>Feito</td></tr>
+<tr><td>V5</td><td>A busca da médica oferecia "Enviar pedido" para paciente já vinculado.</td><td>T16 · RF07</td><td>Mostrar a situação do vínculo (já acompanha, pedido enviado ou convite recebido) no lugar do botão.</td><td>Feito</td></tr>
+<tr><td>V6</td><td>As mensagens de erro do formulário continuavam depois de corrigir o campo.</td><td>T02, T06 · RF01</td><td>Apagar o erro do campo assim que a pessoa digita.</td><td>Feito</td></tr>
+<tr><td>V7</td><td>A base de interações ficava fixa no código: atualizar exigia nova versão do app.</td><td>T07 · RNF14</td><td>Separar a base em arquivo de dados próprio, com número de versão exibido, baixado ao abrir o app.</td><td>Feito</td></tr>
+<tr><td>V8</td><td>Lembretes dependem do app aberto.</td><td>T10 · RF05, RNF02, RNF08</td><td>Registrar como limitação do protótipo web (seção 7); na implementação, usar notificação agendada no aparelho.</td><td>Registrado</td></tr>
+</table></div>
+
+<h2 id="limites">7. Limitações conhecidas do protótipo</h2>
+<ul>
+  <li>Sem servidor: os dados ficam no navegador. Vínculos entre contas funcionam no mesmo navegador; não há backup automático (RNF16) nem disponibilidade medida (RNF15).</li>
+  <li>Lembretes e notificações funcionam com o app aberto (verificação a cada 20 segundos). Lembrete com o app fechado exige notificação agendada no aparelho ou push pelo servidor (RF05, RNF02, RNF08).</li>
+  <li>Recuperação de senha mostra o código na tela, porque não há envio de e-mail (RF17).</li>
+  <li>Senha guardada com SHA-256 e salt. Na implementação, usar bcrypt ou Argon2 no servidor (RNF01).</li>
+  <li>Base de interações reduzida, só para demonstração; não é fonte reconhecida (RNF03).</li>
+  <li>Aplicação web responsiva instalável (PWA), não aplicativo nativo Android/iOS (RNF13).</li>
+</ul>
 </div>
 <script>
 const TELAS=[
@@ -118,8 +142,8 @@ const TELAS=[
 ["T04","Consentimento LGPD","/consentimento","1","RNF06"],
 ["T05","Hoje (doses do dia)","/hoje","11, 12","RF05, RF12"],
 ["T06","Novo remédio","/medicamentos/novo","3, 4","RF01, RF13, RNF10"],
-["T07","Alerta de interação (janela ao salvar)","/medicamentos/novo","4, 5, 14","RF06, RF13, RF14, RNF03"],
-["T08","Meus remédios","/medicamentos","3, 14","RF01, RF09"],
+["T07","Alerta de interação (janela ao salvar)","/medicamentos/novo","4, 5, 14","RF06, RF13, RF14, RNF03, RNF14"],
+["T08","Meus remédios (com interações)","/medicamentos","3, 5, 14","RF01, RF06, RF09"],
 ["T09","Editar remédio","/medicamentos","14","RF09, RF13"],
 ["T10","Lembrete (notificação e janela no horário)","/hoje","11, 12","RF05, RF12, RNF02, RNF08"],
 ["T11","Vínculos","/vinculos","7, 8, 9","RF03, RF04, RF07, RF08"],
@@ -128,11 +152,11 @@ const TELAS=[
 ["T14","Ajustes (leitura e privacidade)","/ajustes","—","RNF06, RNF11, RNF12"],
 ["T15","Meus pacientes (médica e cuidadora)","/pacientes","10, 13","RF10, RF16"],
 ["T16","Buscar paciente","/buscar","6, 8","RF07, RF08"],
-["T17","Ficha do paciente","/pacientes","10, 15","RF10, RF15, RNF07"],
+["T17","Ficha do paciente (com interações)","/pacientes","10, 15","RF06, RF10, RF15, RNF07"],
 ["T18","Aviso de dose não confirmada (na T15 e notificação)","/pacientes","13","RF16"],
 ["T19","Quem acessou meus dados","/acessos","10","RNF07"]];
 const REQ={RF01:"Manter o registro de cada medicamento",RF02:"Manter usuário",RF03:"Manter o médico responsável",RF04:"Manter o cuidador",RF05:"Notificar nos horários cadastrados",RF06:"Informar possíveis interferências",RF07:"Vincular médico responsável",RF08:"Vincular cuidador",RF09:"Atualizar informações dos medicamentos",RF10:"Médico e cuidador autorizados consultam",RF11:"Criar conta e acessar com e-mail e senha",RF12:"Registrar que tomou a dose",RF13:"Verificar interações ao cadastrar ou atualizar",RF14:"Classificar interação leve/moderada/grave",RF15:"Histórico de doses tomadas e não tomadas",RF16:"Notificar cuidador após 60 min",RF17:"Recuperar senha por e-mail",RNF01:"Senha somente com hash",RNF02:"Lembretes sem internet",RNF03:"Base de interações confiável",RNF04:"HTTPS",RNF06:"Permissão antes de usar dados de saúde",RNF07:"Log de consultas do médico/cuidador",RNF08:"Notificação com até 1 min de atraso",RNF10:"Cadastrar remédio em até 3 min",RNF11:"Aumentar a letra",RNF12:"Contraste suficiente"};
-const COMO={RNF01:"senha guardada como hash SHA-256 com salt",RNF02:"app abre sem internet (service worker); lembrete com app fechado depende de push na implementação",RNF03:"base reduzida de demonstração; produção usa base reconhecida",RNF04:"publicado em HTTPS",RNF08:"verificação a cada 20 s com o app aberto",RF17:"código de 6 dígitos com validade de 30 min (mostrado na tela no protótipo)",RF16:"aviso e notificação para a cuidadora após 60 min",RNF07:"cada abertura da ficha gera registro visível ao paciente"};
+const COMO={RNF01:"senha guardada como hash SHA-256 com salt",RNF02:"app abre sem internet (service worker); lembrete com app fechado depende de push na implementação",RNF03:"base reduzida de demonstração, com versão exibida; produção usa base reconhecida",RNF14:"base em arquivo separado (dados/interacoes.json), baixada ao abrir o app; atualizar a base não exige mudar o código",RF06:"alerta ao salvar e selo de interação na lista do paciente e na ficha do médico e do cuidador",RF12:"\"Tomei\" libera 30 min antes do horário; a dose fica gravada no registro",RNF04:"publicado em HTTPS",RNF08:"verificação a cada 20 s com o app aberto",RF17:"código de 6 dígitos com validade de 30 min (mostrado na tela no protótipo)",RF16:"aviso e notificação para a cuidadora após 60 min",RNF07:"cada abertura da ficha gera registro visível ao paciente"};
 document.getElementById("tab-telas").innerHTML="<tr><th>Tela</th><th>Nome</th><th>Endereço</th><th>Passos da história</th><th>Requisitos</th></tr>"+TELAS.map(t=>`<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td><a href="index.html?telas#${t[2]}"><code>${t[2]}</code></a></td><td>${t[3]}</td><td>${t[4]}</td></tr>`).join("");
 document.getElementById("tab-req").innerHTML="<tr><th>Requisito</th><th>Descrição</th><th>Telas</th><th>Como o protótipo atende</th></tr>"+Object.keys(REQ).map(r=>{const ts=TELAS.filter(t=>t[4].split(", ").includes(r)).map(t=>t[0]);return `<tr><td><b>${r}</b></td><td>${REQ[r]}</td><td>${ts.join(", ")}</td><td>${COMO[r]||"funcional nas telas indicadas"}</td></tr>`}).join("");
 document.getElementById("tab-res").innerHTML="<tr><th>#</th><th>Concluiu? (sim / com ajuda / não)</th><th>Tempo</th><th>Observação ou fala do participante</th></tr>"+[1,2,3,4,5,6,7,8].map(i=>`<tr><td>${i}</td><td contenteditable data-k="r${i}a"></td><td contenteditable data-k="r${i}b"></td><td contenteditable data-k="r${i}c"></td></tr>`).join("");
