@@ -170,7 +170,7 @@ rota("/entrar", "T01", () => {
       <p class="t2 small" style="margin:6px 0 10px">Cria três contas de exemplo com 9 dias de histórico: <code>joao@exemplo.com</code> (paciente), <code>helena@exemplo.com</code> (médica) e <code>ana@exemplo.com</code> (cuidadora). Senha de todas: <code>Dose2026</code>.</p>
       <div class="row wrap"><button class="btn btn-secondary btn-sm" data-exemplo>Criar dados de exemplo</button><button class="btn btn-ghost btn-sm" data-apagar>Apagar dados deste navegador</button></div>
     </div>
-    <p class="small muted" style="text-align:center;margin-top:16px">Protótipo acadêmico · os dados ficam só neste navegador · <a href="e3.html">Documentação da E3</a></p>
+    <p class="small muted" style="text-align:center;margin-top:16px">Protótipo acadêmico · os dados ficam só neste navegador · <a href="trabalho.html">Trabalho (E1, E2, E3)</a></p>
   </div></div>`;
   const f = $("form");
   f.onsubmit = async e => {

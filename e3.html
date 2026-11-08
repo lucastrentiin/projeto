@@ -37,8 +37,8 @@ td[contenteditable]:empty::before{content:"preencher";color:#a39e8a;font-style:i
   <h1>E3 · Protótipo e validação</h1>
   <p>Engenharia de Software · Sistemas de Informação · Unochapecó<br>
   Equipe: Camila Siviero, Leonardo Ribas, Eduarda Cristine Vargas, Gabriel Mezzomo Oliboni, Lucas Trentin Avila e Wellinton Davi da Costa<br>
-  Versão 2.1 · 03/11/2026</p>
-  <div class="acoes"><a class="btn btn-primary" href="index.html?telas#/entrar">Abrir o protótipo</a><button class="btn btn-secondary" onclick="window.print()">Imprimir / salvar PDF</button></div>
+  Versão 3.0 · 08/11/2026</p>
+  <div class="acoes"><a class="btn btn-primary" href="index.html?telas#/entrar">Abrir o protótipo</a><a class="btn btn-secondary" href="trabalho.html">E1 e E2 (termo, backlog, requisitos e histórias)</a><button class="btn btn-secondary" onclick="window.print()">Imprimir / salvar PDF</button></div>
   <nav class="indice" aria-label="Seções"><a href="#prototipo">1. Protótipo</a><a href="#fluxo">2. Fluxo de navegação</a><a href="#telas">3. Telas × histórias × requisitos</a><a href="#roteiro">4. Roteiro de validação</a><a href="#registro">5. Registro da validação</a><a href="#ajustes">6. Ajustes decididos</a><a href="#limites">7. Limitações conhecidas</a></nav>
 </header>
 
@@ -55,20 +55,20 @@ td[contenteditable]:empty::before{content:"preencher";color:#a39e8a;font-style:i
 <div class="fluxo"><img src="fluxo.png" alt="Diagrama de navegação entre as telas T01 a T19 do Dose Dupla"></div>
 <h3>Fluxos centrais</h3>
 <div class="tbl"><table>
-<tr><th>Fluxo</th><th>Caminho</th><th>Passos da história</th></tr>
-<tr><td>F1 · Criar conta e entrar</td><td>T01 → T02 → T04 → T05 (alternativo: T01 → T03 → T01)</td><td>1, 2</td></tr>
-<tr><td>F2 · Cadastrar remédio com verificação de interação</td><td>T05 → T06 → T07 (se houver interação) → T08</td><td>3, 4, 5</td></tr>
-<tr><td>F3 · Médica ou cuidadora pede vínculo</td><td>T15 → T16 → (pedido) → T11, paciente aceita ou recusa</td><td>6, 7, 8</td></tr>
-<tr><td>F4 · Paciente convida</td><td>T11 → T12 → (convite) → T15, convidado aceita</td><td>9</td></tr>
-<tr><td>F5 · Consultar dados do paciente</td><td>T15 → T17 (acesso registrado em T19)</td><td>10</td></tr>
-<tr><td>F6 · Lembrete e confirmação</td><td>T10 → Tomei → T05</td><td>11, 12</td></tr>
-<tr><td>F7 · Dose não confirmada</td><td>60 min sem confirmação → T18 (aviso na T15 da cuidadora) → T17</td><td>13</td></tr>
-<tr><td>F8 · Alterar dose</td><td>T08 → T09 → T07 → T08</td><td>14</td></tr>
-<tr><td>F9 · Histórico</td><td>T13 (paciente) e aba Histórico da T17 (médica e cuidadora)</td><td>15</td></tr>
+<tr><th>Fluxo</th><th>Caminho</th><th>Histórias</th></tr>
+<tr><td>F1 · Criar conta e entrar</td><td>T01 → T02 → T04 → T05 (alternativo: T01 → T03 → T01)</td><td>US01, US02, US03</td></tr>
+<tr><td>F2 · Cadastrar remédio com verificação de interação</td><td>T05 → T06 → T07 (se houver interação) → T08</td><td>US04, US05</td></tr>
+<tr><td>F3 · Médica ou cuidadora pede vínculo</td><td>T15 → T16 → (pedido) → T11, paciente aceita ou recusa</td><td>US09, US10, US11</td></tr>
+<tr><td>F4 · Paciente convida</td><td>T11 → T12 → (convite) → T15, convidado aceita</td><td>US10, US11</td></tr>
+<tr><td>F5 · Consultar dados do paciente</td><td>T15 → T17 (acesso registrado em T19)</td><td>US12</td></tr>
+<tr><td>F6 · Lembrete e confirmação</td><td>T10 → Tomei → T05</td><td>US07, US08</td></tr>
+<tr><td>F7 · Dose não confirmada</td><td>60 min sem confirmação → T18 (aviso na T15 da cuidadora) → T17</td><td>US13</td></tr>
+<tr><td>F8 · Alterar dose</td><td>T08 → T09 → T07 → T08</td><td>US06</td></tr>
+<tr><td>F9 · Histórico</td><td>T13 (paciente) e aba Histórico da T17 (médica e cuidadora)</td><td>US14</td></tr>
 </table></div>
 
 <h2 id="telas">3. Telas × histórias × requisitos</h2>
-<p>Os números de história são os passos da história do Seu João (seção E2). Clique no endereço para abrir a tela no protótipo (é preciso estar logado com o perfil certo).</p>
+<p>As histórias US01 a US16 estão no <a href="trabalho.html#hist">documento de requisitos (E2)</a>. Clique no endereço para abrir a tela no protótipo (é preciso estar logado com o perfil certo).</p>
 <div class="tbl"><table id="tab-telas"></table></div>
 <h3>Cobertura dos requisitos</h3>
 <div class="tbl"><table id="tab-req"></table></div>
@@ -136,28 +136,28 @@ td[contenteditable]:empty::before{content:"preencher";color:#a39e8a;font-style:i
 </div>
 <script>
 const TELAS=[
-["T01","Entrar","/entrar","1","RF11, RNF01, RNF04"],
-["T02","Criar conta","/cadastro","1, 2","RF02, RF11, RNF01"],
-["T03","Recuperar senha","/recuperar","2","RF17"],
-["T04","Consentimento LGPD","/consentimento","1","RNF06"],
-["T05","Hoje (doses do dia)","/hoje","11, 12","RF05, RF12"],
-["T06","Novo remédio","/medicamentos/novo","3, 4","RF01, RF13, RNF10"],
-["T07","Alerta de interação (janela ao salvar)","/medicamentos/novo","4, 5, 14","RF06, RF13, RF14, RNF03, RNF14"],
-["T08","Meus remédios (com interações)","/medicamentos","3, 5, 14","RF01, RF06, RF09"],
-["T09","Editar remédio","/medicamentos","14","RF09, RF13"],
-["T10","Lembrete (notificação e janela no horário)","/hoje","11, 12","RF05, RF12, RNF02, RNF08"],
-["T11","Vínculos","/vinculos","7, 8, 9","RF03, RF04, RF07, RF08"],
-["T12","Convidar médico ou cuidador (janela)","/vinculos","9","RF07, RF08"],
-["T13","Histórico de doses","/historico","15","RF15"],
-["T14","Ajustes (leitura e privacidade)","/ajustes","—","RNF06, RNF11, RNF12"],
-["T15","Meus pacientes (médica e cuidadora)","/pacientes","10, 13","RF10, RF16"],
-["T16","Buscar paciente","/buscar","6, 8","RF07, RF08"],
-["T17","Ficha do paciente (com interações)","/pacientes","10, 15","RF06, RF10, RF15, RNF07"],
-["T18","Aviso de dose não confirmada (na T15 e notificação)","/pacientes","13","RF16"],
-["T19","Quem acessou meus dados","/acessos","10","RNF07"]];
+["T01","Entrar","/entrar","US01","RF11, RNF01, RNF04"],
+["T02","Criar conta","/cadastro","US01","RF02, RF11, RNF01"],
+["T03","Recuperar senha","/recuperar","US02","RF17"],
+["T04","Consentimento LGPD","/consentimento","US03","RNF06"],
+["T05","Hoje (doses do dia)","/hoje","US04, US07, US08","RF05, RF12"],
+["T06","Novo remédio","/medicamentos/novo","US04, US05","RF01, RF13, RNF10"],
+["T07","Alerta de interação (janela ao salvar)","/medicamentos/novo","US05, US06","RF06, RF13, RF14, RNF03, RNF14"],
+["T08","Meus remédios (com interações)","/medicamentos","US04, US05, US06","RF01, RF06, RF09"],
+["T09","Editar remédio","/medicamentos","US06","RF09, RF13"],
+["T10","Lembrete (notificação e janela no horário)","/hoje","US07, US08","RF05, RF12, RNF02, RNF08"],
+["T11","Vínculos","/vinculos","US10","RF03, RF04, RF07, RF08"],
+["T12","Convidar médico ou cuidador (janela)","/vinculos","US11","RF07, RF08"],
+["T13","Histórico de doses","/historico","US14","RF15"],
+["T14","Ajustes (leitura e privacidade)","/ajustes","US15, US16","RNF06, RNF11, RNF12"],
+["T15","Meus pacientes (médica e cuidadora)","/pacientes","US09, US11, US12, US13","RF10, RF16"],
+["T16","Buscar paciente","/buscar","US09, US11","RF07, RF08"],
+["T17","Ficha do paciente (com interações)","/pacientes","US12, US14","RF06, RF10, RF15, RNF07"],
+["T18","Aviso de dose não confirmada (na T15 e notificação)","/pacientes","US13","RF16"],
+["T19","Quem acessou meus dados","/acessos","US12","RNF07"]];
 const REQ={RF01:"Manter o registro de cada medicamento",RF02:"Manter usuário",RF03:"Manter o médico responsável",RF04:"Manter o cuidador",RF05:"Notificar nos horários cadastrados",RF06:"Informar possíveis interferências",RF07:"Vincular médico responsável",RF08:"Vincular cuidador",RF09:"Atualizar informações dos medicamentos",RF10:"Médico e cuidador autorizados consultam",RF11:"Criar conta e acessar com e-mail e senha",RF12:"Registrar que tomou a dose",RF13:"Verificar interações ao cadastrar ou atualizar",RF14:"Classificar interação leve/moderada/grave",RF15:"Histórico de doses tomadas e não tomadas",RF16:"Notificar cuidador após 60 min",RF17:"Recuperar senha por e-mail",RNF01:"Senha somente com hash",RNF02:"Lembretes sem internet",RNF03:"Base de interações confiável",RNF04:"HTTPS",RNF06:"Permissão antes de usar dados de saúde",RNF07:"Log de consultas do médico/cuidador",RNF08:"Notificação com até 1 min de atraso",RNF10:"Cadastrar remédio em até 3 min",RNF11:"Aumentar a letra",RNF12:"Contraste suficiente"};
 const COMO={RNF01:"senha guardada como hash SHA-256 com salt",RNF02:"app abre sem internet (service worker); lembrete com app fechado depende de push na implementação",RNF03:"base reduzida de demonstração, com versão exibida; produção usa base reconhecida",RNF14:"base em arquivo separado (dados/interacoes.json), baixada ao abrir o app; atualizar a base não exige mudar o código",RF06:"alerta ao salvar e selo de interação na lista do paciente e na ficha do médico e do cuidador",RF12:"\"Tomei\" libera 30 min antes do horário; a dose fica gravada no registro",RNF04:"publicado em HTTPS",RNF08:"verificação a cada 20 s com o app aberto",RF17:"código de 6 dígitos com validade de 30 min (mostrado na tela no protótipo)",RF16:"aviso e notificação para a cuidadora após 60 min",RNF07:"cada abertura da ficha gera registro visível ao paciente"};
-document.getElementById("tab-telas").innerHTML="<tr><th>Tela</th><th>Nome</th><th>Endereço</th><th>Passos da história</th><th>Requisitos</th></tr>"+TELAS.map(t=>`<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td><a href="index.html?telas#${t[2]}"><code>${t[2]}</code></a></td><td>${t[3]}</td><td>${t[4]}</td></tr>`).join("");
+document.getElementById("tab-telas").innerHTML="<tr><th>Tela</th><th>Nome</th><th>Endereço</th><th>Histórias</th><th>Requisitos</th></tr>"+TELAS.map(t=>`<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td><a href="index.html?telas#${t[2]}"><code>${t[2]}</code></a></td><td>${t[3]}</td><td>${t[4]}</td></tr>`).join("");
 document.getElementById("tab-req").innerHTML="<tr><th>Requisito</th><th>Descrição</th><th>Telas</th><th>Como o protótipo atende</th></tr>"+Object.keys(REQ).map(r=>{const ts=TELAS.filter(t=>t[4].split(", ").includes(r)).map(t=>t[0]);return `<tr><td><b>${r}</b></td><td>${REQ[r]}</td><td>${ts.join(", ")}</td><td>${COMO[r]||"funcional nas telas indicadas"}</td></tr>`}).join("");
 document.getElementById("tab-res").innerHTML="<tr><th>#</th><th>Concluiu? (sim / com ajuda / não)</th><th>Tempo</th><th>Observação ou fala do participante</th></tr>"+[1,2,3,4,5,6,7,8].map(i=>`<tr><td>${i}</td><td contenteditable data-k="r${i}a"></td><td contenteditable data-k="r${i}b"></td><td contenteditable data-k="r${i}c"></td></tr>`).join("");
 document.getElementById("link-proto").textContent=new URL("index.html",location.href).href.replace(/^file:.*/,"index.html");

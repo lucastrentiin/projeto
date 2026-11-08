@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dose Dupla · Trabalho final de Engenharia de Software (E1 a E3)</title>
+<meta name="description" content="Termo de abertura, backlog, requisitos, histórias de usuário, rastreabilidade, protótipo e validação do Dose Dupla.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/app.css">
+<style>
+body{background:var(--canvas)}
+.doc{max-width:1080px;margin:0 auto;padding:32px 20px 72px}
+.capa{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:8px}
+.capa h1{font-size:1.8rem;margin:10px 0 6px}
+.doc h2{font-size:1.45rem;margin:48px 0 8px;padding-top:12px;border-top:3px solid var(--brand)}
+.doc h3{font-size:1.1rem;margin:28px 0 10px}
+.doc p,.doc li{color:var(--text-2)}
+.doc ul{padding-left:20px}
+.entrega{display:inline-block;font-size:.8rem;font-weight:800;letter-spacing:.04em;background:var(--brand);color:#fff;border-radius:var(--r1);padding:3px 8px;margin-right:8px;vertical-align:middle}
+.indice{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.indice a{font-size:.9rem;font-weight:650;text-decoration:none;border:1px solid var(--border-strong);border-radius:999px;padding:6px 12px;background:var(--surface)}
+.tbl{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:var(--r2);background:var(--surface);margin-bottom:8px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:700px}
+th,td{border-bottom:1px solid var(--border);padding:8px 11px;text-align:left;vertical-align:top}
+th{background:var(--surface-2);font-weight:700;color:var(--text);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td b{color:var(--text)}
+.termo th{white-space:normal;width:26%}
+.pri{display:inline-block;font-size:.76rem;font-weight:800;border-radius:var(--r1);padding:2px 7px;white-space:nowrap}
+.p-alta{background:var(--danger-bg);color:var(--danger)} .p-media{background:var(--warning-bg);color:var(--warning)} .p-baixa{background:var(--surface-2);color:var(--text-2)}
+.us{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:12px}
+.us h4{margin:0 0 6px;font-size:1rem}
+.us .meta{font-size:.84rem;color:var(--text-muted);margin-top:8px}
+.us ol{margin:6px 0 0;padding-left:20px;font-size:.92rem}
+.nota{font-size:.86rem;color:var(--text-muted)}
+.acoes{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+code{font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+@media print{.acoes,.indice{display:none!important}.doc{padding:0;max-width:none}.doc h2{break-before:page}.tbl{overflow:visible;border:0}table{min-width:0;font-size:.78rem}.us{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<header class="capa">
+  <div class="marca"><img src="icon.svg" alt="" width="30" height="30">Dose Dupla</div>
+  <h1>Trabalho final de Engenharia de Software · E1, E2 e E3</h1>
+  <p>Universidade Comunitária da Região de Chapecó · Curso de Sistemas de Informação · Componente curricular Engenharia de Software · Prof. Jonas Orso<br>
+  Equipe: Camila Siviero, Leonardo Ribas, Eduarda Cristine Vargas, Gabriel Mezzomo Oliboni, Lucas Trentin Avila e Wellinton Davi da Costa<br>
+  Versão 3.0 · 08/11/2026 · Chapecó, 2026</p>
+  <div class="acoes"><a class="btn btn-primary" href="index.html">Abrir o protótipo</a><a class="btn btn-secondary" href="e3.html">Página da E3</a><button class="btn btn-secondary" onclick="window.print()">Imprimir / salvar PDF</button></div>
+  <nav class="indice" aria-label="Seções">
+    <a href="#e1">E1 · Termo de abertura</a><a href="#backlog">E1 · Backlog priorizado</a>
+    <a href="#e2">E2 · Contexto e perfis</a><a href="#rf">E2 · Requisitos funcionais</a><a href="#rnf">E2 · Não funcionais</a>
+    <a href="#rn">E2 · Regras, restrições e integrações</a><a href="#hist">E2 · Histórias de usuário</a><a href="#rast">E2 · Rastreabilidade</a>
+    <a href="#e3">E3 · Protótipo e validação</a>
+  </nav>
+</header>
+
+<!-- ======================= E1 ======================= -->
+<h2 id="e1"><span class="entrega">E1</span>Termo de Abertura do Projeto</h2>
+<div class="tbl termo"><table>
+<tr><th>Nome do projeto</th><td>Dose Dupla</td></tr>
+<tr><th>Equipe e integrantes</th><td>Camila Siviero, Leonardo Ribas, Eduarda Cristine Vargas, Gabriel Mezzomo Oliboni, Lucas Trentin Avila e Wellinton Davi da Costa</td></tr>
+<tr><th>Versão e data</th><td>1.0 em 27/10/2026 · revisão 3.0 em 08/11/2026</td></tr>
+<tr><th>Problema ou oportunidade</th><td>Pessoas que usam vários medicamentos de forma contínua, em geral idosas, esquecem horários, não registram o que tomaram e não sabem quando dois remédios podem interagir. O médico e o cuidador não têm como acompanhar o uso entre as consultas, então doses perdidas e combinações perigosas só aparecem quando já causaram problema.</td></tr>
+<tr><th>Justificativa</th><td>Esquecer doses ou tomar no horário errado reduz o efeito do tratamento, e combinações de remédios receitados por médicos diferentes podem causar efeitos indesejados. Hoje o controle é feito de memória, em papel ou em alarmes soltos no celular, sem registro e sem ninguém acompanhando. Um aplicativo que lembra o horário, registra a dose, avisa sobre possíveis interações e deixa médico e cuidador autorizados acompanharem reduz esses erros e dá à família uma forma simples de ajudar.</td></tr>
+<tr><th>Objetivo geral</th><td>Desenvolver um aplicativo para gerenciar medicamentos e horários, lembrar e registrar as doses e identificar possíveis interações, com acompanhamento de um médico responsável e de cuidadores autorizados pelo paciente.</td></tr>
+<tr><th>Objetivos específicos (verificáveis)</th><td>
+  <b>O1.</b> Permitir cadastrar, editar e encerrar medicamentos com dose e horários (RF01, RF09).<br>
+  <b>O2.</b> Lembrar cada horário e registrar se a dose foi tomada, com histórico (RF05, RF12, RF15).<br>
+  <b>O3.</b> Verificar e classificar possíveis interações a cada cadastro ou alteração (RF06, RF13, RF14).<br>
+  <b>O4.</b> Permitir que médico e cuidador, só depois do aceite do paciente, consultem os dados e sejam avisados de doses não confirmadas (RF03, RF04, RF07, RF08, RF10, RF16).<br>
+  <b>O5.</b> Proteger o acesso e os dados de saúde, conforme a LGPD (RF11, RF17, RNF01, RNF04, RNF06, RNF07).</td></tr>
+<tr><th>Escopo incluído</th><td>Conta com e-mail e senha e recuperação de senha; consentimento para uso de dados de saúde; cadastro, edição e encerramento de medicamentos com dose e horários; lembretes nos horários; confirmação da dose e histórico de doses tomadas e não tomadas; verificação e classificação de interações (leve, moderada, grave); vínculo do paciente com um médico responsável e com cuidadores, por pedido ou convite, sempre com aceite; consulta dos dados pelo médico e cuidador autorizados, com registro de acesso; aviso ao cuidador quando a dose não é confirmada em 60 minutos; ajuste do tamanho da letra e do contraste.</td></tr>
+<tr><th>Itens fora do escopo</th><td>Prescrição eletrônica ou emissão de receitas; diagnóstico ou recomendação de tratamento pelo aplicativo; compra, entrega ou controle de estoque de medicamentos; integração com farmácias, planos de saúde ou prontuário eletrônico; chat, vídeo ou telemedicina; mais de um médico responsável ao mesmo tempo; monitoramento por dispositivos vestíveis; versão para web administrativa de clínicas.</td></tr>
+<tr><th>Partes interessadas</th><td>
+  <b>Paciente (usuário principal):</b> quer lembrar os horários e tomar os remédios com segurança.<br>
+  <b>Cuidador (familiar ou contratado):</b> quer saber se o paciente tomou os remédios e ser avisado quando não tomou.<br>
+  <b>Médico responsável:</b> quer ver a lista de remédios, a adesão e as interações entre as consultas.<br>
+  <b>Farmacêutico:</b> fonte de orientação sobre interações; valida o conteúdo da base de medicamentos.<br>
+  <b>Equipe do projeto e professor:</b> desenvolvem e avaliam a solução.</td></tr>
+<tr><th>Premissas</th><td>O paciente tem celular com Android ou iOS e sabe o básico de uso; as informações cadastradas pelo paciente são corretas; existe uma base de medicamentos e interações confiável que pode ser consultada; médico e cuidador também usam o aplicativo.</td></tr>
+<tr><th>Restrições</th><td>Cumprimento da LGPD para dados de saúde; o aplicativo informa e alerta, mas não substitui orientação médica ou farmacêutica; prazo acadêmico do semestre (entregas até 08/12/2026) e equipe de 6 pessoas, sem orçamento para serviços pagos; interface utilizável por pessoas idosas.</td></tr>
+<tr><th>Riscos iniciais</th><td>Ver tabela de riscos abaixo.</td></tr>
+<tr><th>Aprovação do professor e data</th><td>&nbsp;</td></tr>
+</table></div>
+
+<h3>Riscos iniciais</h3>
+<div class="tbl"><table>
+<tr><th>ID</th><th>Risco</th><th>Probabilidade</th><th>Impacto</th><th>Resposta planejada</th></tr>
+<tr><td><b>R1</b></td><td>Paciente cadastra o medicamento com nome ou dose errados.</td><td>Alta</td><td>Alto</td><td>Lista de sugestões ao digitar o nome; aviso quando o nome não está na base; aviso de remédio duplicado; médico vê a lista do paciente.</td></tr>
+<tr><td><b>R2</b></td><td>Informação de interação imprecisa ou desatualizada.</td><td>Média</td><td>Alto</td><td>Base de fonte reconhecida, com versão e data exibidas; atualização da base sem nova versão do app (RNF14); alerta sempre orienta procurar o médico.</td></tr>
+<tr><td><b>R3</b></td><td>Exposição indevida de dados de saúde.</td><td>Média</td><td>Alto</td><td>Acesso só depois do aceite do paciente, registro de cada acesso, senha com hash, HTTPS e consentimento (RNF01, RNF04, RNF06, RNF07).</td></tr>
+<tr><td><b>R4</b></td><td>Lembrete não toca (celular sem internet ou app fechado).</td><td>Média</td><td>Alto</td><td>Lembretes agendados no próprio aparelho (RNF02); aviso ao cuidador após 60 minutos.</td></tr>
+<tr><td><b>R5</b></td><td>Idoso não consegue usar a interface.</td><td>Média</td><td>Médio</td><td>Letra grande, botões de 48 px, alto contraste e validação com usuário representativo (E3).</td></tr>
+<tr><td><b>R6</b></td><td>Atraso nas entregas por acúmulo com outras disciplinas.</td><td>Média</td><td>Médio</td><td>Entregas divididas por responsável e revisão da equipe antes de mover para "Em revisão".</td></tr>
+</table></div>
+
+<h3>Responsabilidades da equipe</h3>
+<div class="tbl"><table>
+<tr><th>Integrante</th><th>Responsabilidade principal</th><th>Apoio</th></tr>
+<tr><td>Camila Siviero</td><td>Termo de abertura, escopo e riscos (E1)</td><td>Revisão final do relatório</td></tr>
+<tr><td>Leonardo Ribas</td><td>Requisitos funcionais, não funcionais e regras de negócio (E2)</td><td>Casos de uso (E4)</td></tr>
+<tr><td>Eduarda Cristine Vargas</td><td>Histórias de usuário e critérios de aceitação (E2)</td><td>Roteiro de validação (E3)</td></tr>
+<tr><td>Gabriel Mezzomo Oliboni</td><td>Priorização, backlog e matriz de rastreabilidade (E1, E2)</td><td>Diagrama de classes (E5)</td></tr>
+<tr><td>Lucas Trentin Avila</td><td>Protótipo navegável e publicação (E3)</td><td>Diagrama de atividades (E5)</td></tr>
+<tr><td>Wellinton Davi da Costa</td><td>Condução e registro da validação com usuário (E3)</td><td>Apresentação e retrospectiva (E6)</td></tr>
+</table></div>
+
+<h3 id="backlog">Backlog inicial priorizado</h3>
+<p>Resultados esperados em ordem de prioridade (MoSCoW: <b>M</b> obrigatório, <b>S</b> importante, <b>C</b> desejável). A ordem considera o valor para o paciente, o risco que o item reduz e a dependência entre itens: conta e consentimento vêm primeiro porque tudo depende deles; remédios e lembretes são o núcleo do problema; interações reduzem o risco mais grave; vínculos e acompanhamento dependem dos itens anteriores.</p>
+<div class="tbl"><table>
+<tr><th>#</th><th>Resultado esperado</th><th>MoSCoW</th><th>Justificativa</th><th>Requisitos</th><th>Histórias</th></tr>
+<tr><td><b>B01</b></td><td>Conta, login, recuperação de senha e consentimento LGPD</td><td>M</td><td>Dependência de todos os demais itens; exigência legal.</td><td>RF02, RF11, RF17, RNF01, RNF04, RNF06</td><td>US01, US02, US03</td></tr>
+<tr><td><b>B02</b></td><td>Cadastro e lista de medicamentos com dose e horários</td><td>M</td><td>Núcleo do produto; base para lembretes e interações.</td><td>RF01, RNF10</td><td>US04</td></tr>
+<tr><td><b>B03</b></td><td>Verificação e classificação de interações</td><td>M</td><td>Reduz o maior risco à saúde do paciente.</td><td>RF06, RF13, RF14, RNF03, RNF14</td><td>US05</td></tr>
+<tr><td><b>B04</b></td><td>Lembretes nos horários, inclusive sem internet</td><td>M</td><td>Resolve o esquecimento, dor principal do problema.</td><td>RF05, RNF02, RNF08</td><td>US07</td></tr>
+<tr><td><b>B05</b></td><td>Confirmação de dose e histórico</td><td>M</td><td>Gera a informação que médico e cuidador acompanham.</td><td>RF12, RF15</td><td>US08, US14</td></tr>
+<tr><td><b>B06</b></td><td>Edição de medicamentos com nova verificação</td><td>S</td><td>Mudança de dose é comum entre consultas.</td><td>RF09, RF13</td><td>US06</td></tr>
+<tr><td><b>B07</b></td><td>Vínculo com médico responsável e cuidadores, com aceite</td><td>S</td><td>Habilita o acompanhamento; depende de B01.</td><td>RF03, RF04, RF07, RF08</td><td>US09, US10, US11</td></tr>
+<tr><td><b>B08</b></td><td>Consulta dos dados pelo médico e cuidador, com registro de acesso</td><td>S</td><td>Entrega valor ao médico e ao cuidador; depende de B05 e B07.</td><td>RF10, RNF07</td><td>US12</td></tr>
+<tr><td><b>B09</b></td><td>Aviso ao cuidador após 60 minutos sem confirmação</td><td>S</td><td>Reduz doses perdidas; depende de B04, B05 e B07.</td><td>RF16</td><td>US13</td></tr>
+<tr><td><b>B10</b></td><td>Acessibilidade: tamanho da letra e contraste</td><td>S</td><td>Público idoso; reduz o risco R5.</td><td>RNF11, RNF12</td><td>US15</td></tr>
+<tr><td><b>B11</b></td><td>Exportar e excluir os próprios dados</td><td>C</td><td>Direito do titular na LGPD; baixo esforço.</td><td>RNF05</td><td>US16</td></tr>
+<tr><td><b>B12</b></td><td>Desempenho, disponibilidade e cópia de segurança</td><td>C</td><td>Necessário em produção; verificado na implementação.</td><td>RNF09, RNF13, RNF15, RNF16</td><td>—</td></tr>
+</table></div>
+
+<!-- ======================= E2 ======================= -->
+<h2 id="e2"><span class="entrega">E2</span>Engenharia de Requisitos</h2>
+<h3>Contexto do produto</h3>
+<p>O Dose Dupla é um aplicativo para celular que ajuda o paciente a tomar seus remédios na hora certa e com segurança. O paciente cadastra cada remédio com dose e horários; o aplicativo lembra no horário, registra quando a dose é tomada e avisa se um remédio novo pode interagir com os que ele já usa. O paciente pode autorizar um médico responsável e cuidadores a acompanhar a lista de remédios e o histórico de doses, e o cuidador é avisado quando uma dose não é confirmada.</p>
+<p>A história de uso que originou os requisitos é a do <b>Seu João</b>: ele cria a conta (passos 1 e 2), cadastra os remédios (3) e recebe alerta de interação classificado (4 e 5); a Dra. Helena e a cuidadora Ana pedem vínculo e ele aceita, ou ele mesmo convida (6 a 9); médica e cuidadora consultam a lista (10); o app lembra no horário mesmo sem internet (11), ele confirma a dose (12) e, se não confirmar em 60 minutos, a Ana é avisada (13); a médica muda a dose e o app verifica de novo (14); médica e cuidadora veem o histórico (15).</p>
+<h3>Perfis envolvidos</h3>
+<div class="tbl"><table>
+<tr><th>Perfil</th><th>Quem é</th><th>Precisa de</th><th>O que pode fazer</th></tr>
+<tr><td><b>Paciente</b></td><td>Pessoa que usa remédios de forma contínua, muitas vezes idosa (persona: Seu João).</td><td>Lembrete simples, letra grande, aviso claro de risco.</td><td>Cadastra e edita remédios, confirma doses, vê o histórico, aceita ou recusa vínculos, vê quem acessou seus dados.</td></tr>
+<tr><td><b>Cuidador</b></td><td>Familiar ou profissional que ajuda o paciente (persona: Ana).</td><td>Saber se o paciente tomou e ser avisado quando não tomou.</td><td>Pede vínculo, consulta remédios e histórico, recebe aviso de dose não confirmada.</td></tr>
+<tr><td><b>Médico responsável</b></td><td>Médico que acompanha o paciente (persona: Dra. Helena).</td><td>Ver a lista atual, a adesão e as interações entre consultas.</td><td>Pede vínculo, consulta remédios, interações e histórico.</td></tr>
+<tr><td><b>Farmacêutico</b></td><td>Parte interessada indireta, não usa o app.</td><td>Base de interações correta.</td><td>Valida o conteúdo da base de medicamentos.</td></tr>
+</table></div>
+
+<h3 id="rf">Requisitos funcionais</h3>
+<p class="nota">Prioridade: <span class="pri p-alta">Alta</span> obrigatório para o primeiro uso; <span class="pri p-media">Média</span> importante, depende de itens de alta; <span class="pri p-baixa">Baixa</span> desejável. Fonte: passo da história do Seu João (H1 a H15), termo de abertura (TA) ou parte interessada.</p>
+<div class="tbl"><table id="t-rf"></table></div>
+
+<h3 id="rnf">Requisitos não funcionais</h3>
+<div class="tbl"><table id="t-rnf"></table></div>
+
+<h3 id="rn">Regras de negócio</h3>
+<div class="tbl"><table>
+<tr><th>ID</th><th>Regra</th><th>Requisitos</th><th>Fonte</th></tr>
+<tr><td><b>RN01</b></td><td>Médico ou cuidador só acessa os dados do paciente depois que o vínculo é aceito. Pedido recusado é encerrado sem nenhum acesso.</td><td>RF07, RF08, RF10</td><td>H7</td></tr>
+<tr><td><b>RN02</b></td><td>Quem aceita o vínculo é sempre a outra parte: o paciente aceita pedidos de médico e cuidador; o convidado aceita convites do paciente.</td><td>RF07, RF08</td><td>H7, H9</td></tr>
+<tr><td><b>RN03</b></td><td>O paciente tem no máximo um médico responsável ativo. Aceitar outro médico encerra o vínculo anterior. Pode ter vários cuidadores.</td><td>RF03, RF07</td><td>H6, H7</td></tr>
+<tr><td><b>RN04</b></td><td>Toda interação encontrada é classificada como leve, moderada ou grave. Em interação grave, o paciente só salva depois de confirmar que entendeu o risco.</td><td>RF06, RF14</td><td>H5</td></tr>
+<tr><td><b>RN05</b></td><td>A dose só pode ser confirmada a partir de 30 minutos antes do horário. Depois do horário, fica "aguardando" por 60 minutos e então passa a "não tomada".</td><td>RF12, RF15, RF16</td><td>H12, H13 (ajuste da validação E3)</td></tr>
+<tr><td><b>RN06</b></td><td>Se a dose não for confirmada em até 60 minutos do horário, todos os cuidadores vinculados são avisados.</td><td>RF16</td><td>H13</td></tr>
+<tr><td><b>RN07</b></td><td>Só o paciente cadastra, edita ou encerra os próprios remédios. Médico e cuidador apenas consultam.</td><td>RF01, RF09, RF10</td><td>H14</td></tr>
+<tr><td><b>RN08</b></td><td>Ao mudar a dose, o histórico mantém a dose que valia em cada dia.</td><td>RF09, RF15</td><td>H14, H15</td></tr>
+<tr><td><b>RN09</b></td><td>Senha com no mínimo 8 caracteres, com letras e números. E-mail único por conta.</td><td>RF11</td><td>H2</td></tr>
+<tr><td><b>RN10</b></td><td>O link ou código de recuperação de senha vale por 30 minutos e é de uso único.</td><td>RF17</td><td>H2</td></tr>
+</table></div>
+
+<h3>Restrições</h3>
+<div class="tbl"><table>
+<tr><th>ID</th><th>Restrição</th><th>Origem</th></tr>
+<tr><td><b>C01</b></td><td>Tratamento de dados pessoais e de saúde conforme a LGPD (Lei 13.709/2018): consentimento, finalidade, acesso do titular e exclusão.</td><td>Termo · premissas e restrições</td></tr>
+<tr><td><b>C02</b></td><td>O aplicativo informa e alerta; não faz diagnóstico, não prescreve e não substitui orientação médica ou farmacêutica.</td><td>Termo · riscos</td></tr>
+<tr><td><b>C03</b></td><td>A base de medicamentos e interações deve vir de fonte reconhecida e ter versão identificada.</td><td>Termo · premissas</td></tr>
+<tr><td><b>C04</b></td><td>Funcionar em celulares Android e iOS.</td><td>RNF13</td></tr>
+<tr><td><b>C05</b></td><td>Projeto acadêmico: prazo até 08/12/2026, equipe de 6 integrantes e sem orçamento para serviços pagos.</td><td>Termo · restrições</td></tr>
+</table></div>
+
+<h3>Integrações</h3>
+<div class="tbl"><table>
+<tr><th>ID</th><th>Integração</th><th>Uso</th><th>Requisitos</th></tr>
+<tr><td><b>I01</b></td><td>Base de medicamentos e interações de fonte reconhecida</td><td>Reconhecer o princípio ativo e verificar interações. A base é atualizada sem nova versão do app.</td><td>RF06, RF13, RF14, RNF03, RNF14</td></tr>
+<tr><td><b>I02</b></td><td>Serviço de envio de e-mail</td><td>Enviar o link de recuperação de senha e os convites de vínculo.</td><td>RF17, RF08</td></tr>
+<tr><td><b>I03</b></td><td>Serviço de notificações do celular (Android e iOS)</td><td>Avisar o cuidador sobre dose não confirmada e entregar lembretes.</td><td>RF05, RF16, RNF08</td></tr>
+</table></div>
+
+<h3>Priorização justificada</h3>
+<p>Os requisitos foram priorizados por três critérios, nesta ordem: <b>dependência</b> (o que outros requisitos precisam para existir), <b>risco</b> (o que evita dano à saúde ou exposição de dados) e <b>valor</b> (o quanto resolve a dor principal do paciente). Por isso conta, consentimento, cadastro de remédios, interações, lembretes e confirmação de dose são de prioridade alta: sem eles o produto não resolve o problema e não pode ser usado com segurança. Vínculos, consulta pelo médico e cuidador e aviso de 60 minutos são de prioridade média porque dependem dos anteriores, embora entreguem o diferencial do produto. Itens de infraestrutura que não mudam o uso no dia a dia ficam com prioridade baixa nesta fase.</p>
+
+<h3 id="hist">Histórias de usuário</h3>
+<p class="nota">Formato "Como … quero … para …", com critérios de aceitação objetivos (Dado / Quando / Então), prioridade, dependências e requisitos relacionados. Cada história é pequena o bastante para ser feita dentro de uma iteração.</p>
+<div id="lista-us"></div>
+
+<h3 id="rast">Matriz de rastreabilidade</h3>
+<p>Liga cada objetivo do termo (O1 a O5) aos requisitos, às histórias e às telas do protótipo (E3).</p>
+<div class="tbl"><table id="t-rast"></table></div>
+
+<h3>Revisões em relação à versão de 27/10/2026</h3>
+<div class="tbl"><table>
+<tr><th>Item</th><th>Ajuste</th><th>Motivo</th></tr>
+<tr><td>Fora do escopo</td><td>Reescrito com itens que de fato não serão feitos.</td><td>A versão anterior citava o cadastro de médicos e cuidadores para monitoramento, que está no escopo incluído (RF03, RF04, RF10).</td></tr>
+<tr><td>RNF03</td><td>Reescrito para ser verificável (fonte e versão identificadas). O "depende de base confiável" passou a ser a restrição C03.</td><td>Dependência não é requisito verificável.</td></tr>
+<tr><td>RNF05</td><td>Preenchido (exportar e excluir os próprios dados).</td><td>Estava sem texto.</td></tr>
+<tr><td>RF02, RF03, RF04</td><td>Descrição detalhada do que "manter" significa.</td><td>Tornar o requisito verificável.</td></tr>
+<tr><td>RN05, RN08</td><td>Regras novas.</td><td>Decisões tomadas na validação do protótipo (E3).</td></tr>
+</table></div>
+
+<!-- ======================= E3 ======================= -->
+<h2 id="e3"><span class="entrega">E3</span>Protótipo e validação</h2>
+<p>O protótipo é navegável e de alta fidelidade, feito como aplicação web responsiva. Todos os botões funcionam, com dados gravados no navegador. Cobre os fluxos centrais das histórias US01 a US16.</p>
+<ul>
+  <li><b>Link do protótipo:</b> <a href="index.html" class="link-abs">index.html</a>. Para testar: "Criar dados de exemplo" na tela de entrada e entrar com <code>joao@exemplo.com</code>, senha <code>Dose2026</code> (também <code>helena@exemplo.com</code> e <code>ana@exemplo.com</code>).</li>
+  <li><b>Fluxo de navegação, relação entre telas, histórias e requisitos, roteiro de validação, retornos e decisões de ajuste:</b> <a href="e3.html" class="link-abs">página da E3</a>.</li>
+</ul>
+<div class="tbl"><table id="t-telas"></table></div>
+
+</div>
+<script>
+const P = p => `<span class="pri p-${p === "Alta" ? "alta" : p === "Média" ? "media" : "baixa"}">${p}</span>`;
+const RF = [
+ ["RF01","O aplicativo deve permitir ao paciente cadastrar e listar seus medicamentos, com nome, dose, horários e observação.","Alta","H3","US04"],
+ ["RF02","O aplicativo deve manter o usuário: cadastrar, consultar, alterar dados e excluir a conta, com o perfil paciente, médico (com CRM) ou cuidador.","Alta","H1, TA","US01, US16"],
+ ["RF03","O aplicativo deve manter o médico responsável do paciente: registrar, exibir e encerrar o vínculo.","Média","H6, H7","US09, US10"],
+ ["RF04","O aplicativo deve manter os cuidadores do paciente: registrar, exibir e encerrar cada vínculo.","Média","H8","US10, US11"],
+ ["RF05","O aplicativo deve enviar notificação ao paciente em cada horário cadastrado.","Alta","H11","US07"],
+ ["RF06","O aplicativo deve informar ao paciente, ao médico e ao cuidador as possíveis interações entre os medicamentos em uso.","Alta","H4, H5","US05, US12"],
+ ["RF07","O aplicativo deve permitir vincular um médico responsável ao paciente, por pedido do médico ou convite do paciente, com aceite.","Média","H6, H7, H9","US09, US10"],
+ ["RF08","O aplicativo deve permitir vincular cuidadores ao paciente, por pedido do cuidador ou convite do paciente, com aceite.","Média","H8, H9","US10, US11"],
+ ["RF09","O aplicativo deve permitir ao paciente alterar a dose e os horários de um medicamento e encerrar o uso.","Alta","H14","US06"],
+ ["RF10","O aplicativo deve permitir que o médico e o cuidador vinculados consultem os medicamentos, as interações e o histórico do paciente.","Média","H10","US12"],
+ ["RF11","O aplicativo deve permitir criar conta e entrar com e-mail e senha.","Alta","H1, H2","US01"],
+ ["RF12","O aplicativo deve permitir ao paciente registrar que tomou cada dose, com data e hora.","Alta","H12","US08"],
+ ["RF13","O aplicativo deve verificar as interações sempre que um medicamento for cadastrado ou alterado.","Alta","H4, H14","US05, US06"],
+ ["RF14","O aplicativo deve classificar cada interação encontrada como leve, moderada ou grave.","Alta","H5","US05"],
+ ["RF15","O aplicativo deve exibir o histórico de doses tomadas e não tomadas, por período e por medicamento.","Média","H15","US14"],
+ ["RF16","O aplicativo deve notificar os cuidadores quando uma dose não for confirmada em até 60 minutos do horário.","Média","H13","US13"],
+ ["RF17","O aplicativo deve permitir recuperar a senha por e-mail.","Alta","H2","US02"],
+];
+const RNF = [
+ ["RNF01","Segurança","Armazenar senhas somente com hash e salt, nunca em texto puro.","Alta","H1, TA","Inspecionar a base: nenhuma senha legível."],
+ ["RNF02","Confiabilidade","Manter os lembretes funcionando sem conexão com a internet.","Alta","H11","Modo avião: o lembrete toca no horário."],
+ ["RNF03","Confiabilidade","Usar base de medicamentos e interações de fonte reconhecida, com versão e data de atualização exibidas no alerta.","Alta","TA","O alerta mostra a fonte e a versão da base."],
+ ["RNF04","Segurança","Enviar e receber dados somente por HTTPS.","Alta","TA","Toda requisição usa HTTPS; HTTP é recusado."],
+ ["RNF05","Privacidade","Permitir que o usuário exporte e exclua seus próprios dados a qualquer momento.","Baixa","TA (LGPD)","Em Ajustes, baixar os dados gera arquivo; excluir remove a conta."],
+ ["RNF06","Privacidade","Pedir permissão do usuário antes de usar os dados de saúde, conforme a LGPD.","Alta","TA","Sem aceite, nenhuma tela de dados abre."],
+ ["RNF07","Segurança","Registrar um log a cada consulta do médico ou do cuidador aos dados do paciente, visível ao paciente.","Média","H10, TA","Abrir a ficha gera registro com quem e quando."],
+ ["RNF08","Desempenho","Enviar a notificação de cada medicamento com no máximo 1 minuto de atraso.","Alta","H11","Medir a diferença entre o horário e a notificação."],
+ ["RNF09","Desempenho","Abrir cada tela em até 3 segundos em 95% dos acessos.","Baixa","TA","Medição em teste com 20 aberturas por tela."],
+ ["RNF10","Usabilidade","Permitir que um usuário novo cadastre um medicamento em até 3 minutos, sem ajuda.","Alta","H3","Teste com usuário cronometrado (E3)."],
+ ["RNF11","Acessibilidade","Permitir aumentar o tamanho das letras em pelo menos 30%.","Média","Perfil paciente idoso","Ajustes oferece Normal, Grande e Muito grande."],
+ ["RNF12","Acessibilidade","Usar textos e botões com contraste mínimo de 4,5:1 (WCAG AA) e oferecer modo de alto contraste.","Média","Perfil paciente idoso","Medir contraste com ferramenta de acessibilidade."],
+ ["RNF13","Portabilidade","Funcionar em celulares com Android e iOS.","Baixa","TA","Executar os fluxos centrais nos dois sistemas."],
+ ["RNF14","Manutenibilidade","Permitir atualizar a base de interações sem lançar nova versão do aplicativo.","Média","Risco R2","Trocar a base e ver o alerta mudar sem atualizar o app."],
+ ["RNF15","Disponibilidade","Estar disponível pelo menos 99% do tempo em cada mês.","Baixa","TA","Monitoramento mensal de disponibilidade."],
+ ["RNF16","Confiabilidade","Fazer cópia de segurança dos dados dos usuários todos os dias.","Baixa","TA","Conferir a existência da cópia diária e restaurar uma."],
+];
+document.getElementById("t-rf").innerHTML = "<tr><th>ID</th><th>Requisito</th><th>Prioridade</th><th>Fonte</th><th>Histórias</th></tr>" +
+  RF.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${P(r[2])}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join("");
+document.getElementById("t-rnf").innerHTML = "<tr><th>ID</th><th>Categoria</th><th>Requisito</th><th>Prioridade</th><th>Fonte</th><th>Como verificar</th></tr>" +
+  RNF.map(r => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${P(r[3])}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join("");
+
+const US = [
+ ["US01","Paciente","criar uma conta com e-mail e senha","acessar meus remédios em qualquer momento","Alta","—","RF02, RF11, RNF01, RN09","T01, T02",
+  ["Dado um e-mail que já tem conta, quando eu tento criar a conta, então o app mostra \"Este e-mail já tem conta\" e não cria outra.",
+   "Dada uma senha com menos de 8 caracteres ou sem número, quando eu salvo, então o app recusa e explica a regra.",
+   "Dados nome, e-mail novo e senha válida, quando eu salvo, então a conta é criada e vou para a tela de consentimento."]],
+ ["US02","Paciente","recuperar a senha pelo e-mail","voltar a usar o app se eu esquecer a senha","Alta","US01","RF17, RN10","T03",
+  ["Quando informo o e-mail, então o app mostra a mesma mensagem exista ou não a conta.",
+   "Dado o código recebido há menos de 30 minutos, quando informo o código e uma senha válida, então a senha é trocada e consigo entrar com ela.",
+   "Dado um código vencido ou já usado, quando tento usar, então o app recusa e pede um novo."]],
+ ["US03","Paciente","autorizar o uso dos meus dados de saúde antes de começar","saber como meus dados serão usados","Alta","US01","RNF06","T04",
+  ["Enquanto eu não marcar o consentimento, o botão Continuar fica desabilitado e nenhuma tela de dados abre.",
+   "Quando eu aceito, a data do consentimento fica registrada e aparece em Ajustes."]],
+ ["US04","Paciente","cadastrar um remédio com nome, dose e horários","receber lembretes no horário certo","Alta","US03","RF01, RNF10","T05, T06, T08",
+  ["Sem nome, dose ou pelo menos um horário, o app não salva e indica o campo que falta.",
+   "Ao digitar o nome, o app sugere nomes da base de medicamentos.",
+   "Depois de salvo, o remédio aparece na lista e suas doses aparecem na tela Hoje.",
+   "Um usuário novo conclui o cadastro em até 3 minutos, sem ajuda."]],
+ ["US05","Paciente","ser avisado se o remédio novo interage com os que eu já uso","evitar uma combinação perigosa","Alta","US04","RF06, RF13, RF14, RN04","T07, T08",
+  ["Quando salvo um remédio que interage com outro da lista, o app mostra o par, a gravidade (leve, moderada ou grave) e o que pode acontecer.",
+   "Em interação grave, o botão de salvar só libera depois de eu marcar que entendi o risco.",
+   "Se não há interação, o remédio é salvo direto, sem alerta.",
+   "Se o nome não está na base, o app avisa que não conseguiu verificar.",
+   "Depois de salvo, a interação continua visível na minha lista de remédios."]],
+ ["US06","Paciente","alterar a dose ou os horários de um remédio","seguir a nova orientação do médico","Alta","US04","RF09, RF13, RN08","T08, T09, T07",
+  ["Quando salvo a alteração, o app verifica as interações de novo.",
+   "Os lembretes passam a seguir os novos horários.",
+   "O histórico dos dias anteriores continua mostrando a dose antiga."]],
+ ["US07","Paciente","ser lembrado na hora de cada dose, mesmo sem internet","não esquecer meus remédios","Alta","US04","RF05, RNF02, RNF08","T10, T05",
+  ["No horário cadastrado, o app mostra o lembrete com nome e dose do remédio, com no máximo 1 minuto de atraso.",
+   "Com o celular sem internet, o lembrete aparece do mesmo jeito.",
+   "O lembrete oferece \"Tomei\" e \"Lembrar em 10 minutos\"."]],
+ ["US08","Paciente","confirmar que tomei a dose","manter meu registro em dia e tranquilizar quem me acompanha","Alta","US07","RF12, RN05","T05, T10",
+  ["Quando toco em \"Tomei\", a dose fica marcada com o horário da confirmação, com opção de desfazer.",
+   "Antes de 30 minutos do horário, o botão não aparece e o app mostra a partir de quando libera.",
+   "Dose sem confirmação depois de 60 minutos aparece como \"Não tomada\" em todas as telas."]],
+ ["US09","Médico","encontrar o paciente pelo e-mail e pedir para acompanhá-lo","ver os remédios dele entre as consultas","Média","US01","RF03, RF07, RN01, RN03","T16, T15",
+  ["Quando busco um e-mail de paciente existente, o app mostra o nome e o botão de enviar pedido.",
+   "Se já acompanho o paciente ou o pedido está pendente, o app mostra essa situação em vez do botão.",
+   "Antes do aceite, não vejo nenhum dado do paciente."]],
+ ["US10","Paciente","aceitar ou recusar quem pede para me acompanhar","decidir quem vê meus dados","Média","US09, US11","RF03, RF04, RF07, RF08, RN01, RN02, RN03","T11",
+  ["O pedido mostra nome e papel de quem pediu.",
+   "Ao aceitar, a pessoa passa a aparecer como médico responsável ou cuidador.",
+   "Ao recusar, o pedido é encerrado e a pessoa não vê nada.",
+   "Se já tenho médico responsável, o app pede confirmação antes de trocar.",
+   "Posso remover um vínculo a qualquer momento, e o acesso termina na hora."]],
+ ["US11","Cuidador","pedir para acompanhar o paciente, ou aceitar o convite dele","ajudar no tratamento de quem eu cuido","Média","US01","RF04, RF08, RN02","T12, T16, T15",
+  ["O paciente pode me convidar pelo e-mail, e eu vejo o convite para aceitar ou recusar.",
+   "Eu posso buscar o paciente e enviar pedido, e o paciente decide.",
+   "O vínculo só fica ativo depois do aceite da outra parte."]],
+ ["US12","Médico ou cuidador","consultar os remédios, as interações e as doses do paciente","acompanhar o tratamento","Média","US10","RF06, RF10, RNF07","T15, T17, T19",
+  ["Com vínculo ativo, vejo as doses de hoje, os remédios, as interações e o histórico.",
+   "Sem vínculo ativo, o app mostra \"Sem acesso a este paciente\".",
+   "Cada abertura da ficha é registrada, e o paciente vê quem acessou e quando."]],
+ ["US13","Cuidador","ser avisado quando o paciente não confirmar uma dose em 60 minutos","agir a tempo","Média","US08, US11","RF16, RN06","T18, T15",
+  ["Passados 60 minutos do horário sem confirmação, recebo aviso com o nome do paciente, o remédio e o horário.",
+   "Se a dose for confirmada antes de 60 minutos, nenhum aviso é enviado.",
+   "O aviso tem atalho para abrir a ficha do paciente."]],
+ ["US14","Paciente, médico ou cuidador","ver o histórico de doses tomadas e não tomadas","avaliar se o tratamento está sendo seguido","Média","US08","RF15, RN08","T13, T17",
+  ["Posso filtrar por 7, 14 ou 30 dias e por remédio.",
+   "O app mostra a porcentagem de doses tomadas e o total de tomadas e não tomadas.",
+   "Cada dose tomada mostra o horário da confirmação."]],
+ ["US15","Paciente","aumentar o tamanho da letra e usar alto contraste","ler o app sem esforço","Média","US01","RNF11, RNF12","T14",
+  ["Em Ajustes, escolho Normal, Grande ou Muito grande, e a mudança vale em todas as telas.",
+   "O alto contraste escurece textos e bordas em todas as telas.",
+   "Nenhum texto fica cortado ou sobreposto no tamanho Muito grande."]],
+ ["US16","Paciente","baixar ou excluir meus dados","ter controle sobre minhas informações","Baixa","US01","RF02, RNF05","T14",
+  ["\"Baixar meus dados\" gera um arquivo com conta, remédios, doses, vínculos e acessos.",
+   "\"Excluir minha conta\" pede confirmação e apaga conta, remédios, histórico e vínculos."]],
+];
+document.getElementById("lista-us").innerHTML = US.map(u => `<div class="us" id="${u[0]}">
+  <h4>${u[0]} · Como <b>${u[1].toLowerCase()}</b>, quero ${u[2]}, para ${u[3]}.</h4>
+  <b class="small">Critérios de aceitação</b><ol>${u[8].map(c => `<li>${c}</li>`).join("")}</ol>
+  <div class="meta">Prioridade ${P(u[4])} · Depende de: ${u[5]} · Requisitos e regras: ${u[6]} · Telas: ${u[7]}</div></div>`).join("");
+
+const OBJ = [
+ ["O1 · Gerenciar medicamentos e horários", "RF01, RF09, RNF10", "US04, US06", "T06, T08, T09"],
+ ["O2 · Lembrar e registrar as doses", "RF05, RF12, RF15, RNF02, RNF08", "US07, US08, US14", "T05, T10, T13"],
+ ["O3 · Identificar interações", "RF06, RF13, RF14, RNF03, RNF14", "US05, US06", "T07, T08, T17"],
+ ["O4 · Acompanhamento por médico e cuidador", "RF03, RF04, RF07, RF08, RF10, RF16", "US09, US10, US11, US12, US13", "T11, T12, T15, T16, T17, T18"],
+ ["O5 · Acesso seguro e privacidade", "RF02, RF11, RF17, RNF01, RNF04, RNF05, RNF06, RNF07", "US01, US02, US03, US12, US16", "T01, T02, T03, T04, T14, T19"],
+ ["Usabilidade para idosos (perfil paciente)", "RNF11, RNF12", "US15", "T14"],
+];
+document.getElementById("t-rast").innerHTML = "<tr><th>Objetivo do termo</th><th>Requisitos</th><th>Histórias</th><th>Telas do protótipo</th></tr>" +
+  OBJ.map(o => `<tr><td><b>${o[0]}</b></td><td>${o[1]}</td><td>${o[2]}</td><td>${o[3]}</td></tr>`).join("");
+
+const TELAS = [["T01","Entrar","US01"],["T02","Criar conta","US01"],["T03","Recuperar senha","US02"],["T04","Consentimento LGPD","US03"],["T05","Hoje","US04, US07, US08"],["T06","Novo remédio","US04, US05"],["T07","Alerta de interação","US05, US06"],["T08","Meus remédios","US04, US05, US06"],["T09","Editar remédio","US06"],["T10","Lembrete","US07, US08"],["T11","Vínculos","US10"],["T12","Convidar","US11"],["T13","Histórico","US14"],["T14","Ajustes","US15, US16"],["T15","Meus pacientes","US09, US11, US12, US13"],["T16","Buscar paciente","US09, US11"],["T17","Ficha do paciente","US12, US14"],["T18","Aviso de dose não confirmada","US13"],["T19","Quem acessou meus dados","US12"]];
+document.getElementById("t-telas").innerHTML = "<tr><th>Tela</th><th>Nome</th><th>Histórias atendidas</th></tr>" +
+  TELAS.map(t => `<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td>${t[2]}</td></tr>`).join("");
+document.querySelectorAll(".link-abs").forEach(a => { if (location.protocol.startsWith("http")) a.textContent = new URL(a.getAttribute("href"), location.href).href; });
+</script>
+</body>
+</html>
